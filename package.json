@@ -17,6 +17,7 @@
     "eval:replay": "tsx packages/eval-harness/src/replay-cli.ts",
     "eval:report": "tsx packages/eval-harness/src/report-cli.ts",
     "eval:framework": "tsx packages/eval-harness/src/framework-judge-cli.ts",
+    "autonomous": "tsx packages/agent-framework/src/cli.ts",
     "smoke:refine": "tsx packages/mcp-server/src/smoke.ts",
     "smoke:index": "tsx packages/mcp-server/src/smoke-index.ts",
     "smoke:brief": "tsx packages/mcp-server/src/smoke-brief.ts",
