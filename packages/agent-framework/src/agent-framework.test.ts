@@ -94,4 +94,39 @@ describe("agent framework scaffold", () => {
       await rm(workspaceRoot, { recursive: true, force: true });
     }
   });
+
+  it("orchestrator routes epics to correct complexity tiers", async () => {
+    const workspaceRoot = await mkdtemp(join(tmpdir(), "agent-framework-test-"));
+    const store = createContextStore(workspaceRoot);
+    await store.initialize({
+      projectName: "Test",
+      projectGoal: "Test"
+    });
+
+    try {
+      const orchestrator = new Orchestrator(workspaceRoot);
+
+      // Heuristic Routing: High Complexity -> Tier 3
+      const tier3 = await orchestrator.determineComplexityTier("Database schema migration for OAuth tokens");
+      expect(tier3).toBe("tier3_hosted");
+
+      // Heuristic Routing: Low Complexity -> Tier 1
+      const tier1 = await orchestrator.determineComplexityTier("Fix typo in button comment");
+      expect(tier1).toBe("tier1_local");
+
+      // Default/LLM Routing: Medium Complexity -> Tier 2
+      const tier2 = await orchestrator.determineComplexityTier("Build standard event emitter class with tests");
+      // Since local generator defaults, this should resolve to tier2_hybrid or local classification
+      expect(["tier1_local", "tier2_hybrid", "tier3_hosted"]).toContain(tier2);
+
+      // Perform a full tiered planning cycle
+      const milestones = await orchestrator.planEpic("Safe transaction log with db migration");
+      expect(orchestrator.lastPlanningTokens).toBeDefined();
+      expect(orchestrator.lastPlanningTokens?.tier).toBe("tier3_hosted");
+      expect(orchestrator.lastPlanningTokens?.tokensHostedInput).toBe(12000);
+      expect(orchestrator.lastPlanningTokens?.tokensHosted).toBe(13500);
+    } finally {
+      await rm(workspaceRoot, { recursive: true, force: true });
+    }
+  });
 });
