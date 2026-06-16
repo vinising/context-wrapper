@@ -2,11 +2,31 @@
 
 For architecture, scoring logic, runtime selection, and configuration reference, see [technical-reference.md](./technical-reference.md).
 
-## 1. Install Dependencies
+## 1. Global Setup (Recommended)
+
+To install the Local Context Wrapper globally so you can use it in any directory on your computer:
 
 ```bash
+# 1. Install dependencies
 npm install
+
+# 2. Register global 'lcw' CLI command
+npm link
 ```
+
+### Setup any project in 1 command
+Once linked, navigate to **any project directory** on your machine and run:
+```bash
+lcw setup
+```
+This single command runs workspace setup, automated project exploration, copies slash commands, registers MCP inside `.cursor/mcp.json`, and downloads all needed models in the background.
+
+To check setup health at any time, run:
+```bash
+lcw diagnose
+```
+
+---
 
 ## 2. Verify The Prototype
 

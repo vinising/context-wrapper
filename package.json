@@ -1,8 +1,11 @@
 {
   "name": "local-context-wrapper",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "type": "module",
+  "bin": {
+    "lcw": "./bin/lcw.js"
+  },
   "workspaces": [
     "packages/*"
   ],

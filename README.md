@@ -11,6 +11,38 @@ Local Context Wrapper is a Cursor-native sidecar for MacBooks. It uses a local m
 
 For internal logic, data flow, configuration knobs, and tweak points, see [docs/technical-reference.md](docs/technical-reference.md).
 
+## Global CLI Integration (Command: `lcw`)
+
+The Local Context Wrapper can be installed globally as a command-line binary. This allows you to set up, explore, diagnose, and run autonomous agent epics on any project directory on your machine.
+
+### 1. Register Global CLI
+Run this one-time command from the cloned Wrapper repository root:
+```bash
+npm link
+```
+
+### 2. Available Global Commands (`lcw`)
+Once linked, you can execute the global `lcw` command from any terminal session, inside any project:
+
+```bash
+# 1. Setup, explore, and seed context for a target project
+lcw setup
+
+# 2. Check the health and readiness of services (Ollama, models, venvs)
+lcw diagnose
+
+# 3. Launch the tiered multi-agent framework on an epic autonomously
+lcw auto "Implement dark mode toggle settings"
+
+# 4. Rebuild the codebase semantic/lexical search index
+lcw index
+
+# 5. Create a task-scoped briefing document locally under .wrapper/runs/
+lcw brief "implement setting toggles"
+```
+
+---
+
 ## Cursor Limitation
 
 Cursor does not currently document a public extension API for transparently rewriting built-in chat prompts or using an arbitrary local model as the main Agent/chat model. This project uses supported surfaces instead: local MCP tools, rules, commands, skills, and hooks.
