@@ -121,6 +121,14 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
         },
         required: ["task"]
       }
+    },
+    {
+      name: "diagnose_setup",
+      description: "Verify the health and readiness of the Local Context Wrapper MCP installation and runtimes.",
+      inputSchema: {
+        type: "object",
+        properties: {}
+      }
     }
   ]
 }));
@@ -154,6 +162,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "build_agent_brief") {
     return asText(await tools.buildAgentBrief(args as Parameters<typeof tools.buildAgentBrief>[0]));
+  }
+
+  if (request.params.name === "diagnose_setup") {
+    return asText(await tools.diagnoseSetup());
   }
 
   if (request.params.name === "get_runtime_profile") {

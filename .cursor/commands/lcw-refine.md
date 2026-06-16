@@ -3,7 +3,6 @@
 The user wants local prompt refinement. Call the `refine_prompt` MCP tool with their rough request.
 
 Return:
-
 - refined prompt,
 - missing context,
 - recommended clarifying questions,

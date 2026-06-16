@@ -9,6 +9,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "mcp": "tsx packages/mcp-server/src/cli.ts",
+    "setup": "tsx packages/mcp-server/src/setup-cli.ts",
     "setup:workspace": "tsx packages/mcp-server/src/setup-workspace-cli.ts",
     "setup:cursor": "tsx packages/mcp-server/src/setup-cursor-cli.ts",
     "eval:extract": "tsx packages/eval-harness/src/extractor-cli.ts",

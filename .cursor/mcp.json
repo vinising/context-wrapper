@@ -2,7 +2,16 @@
   "mcpServers": {
     "local-context-wrapper": {
       "command": "bash",
-      "args": ["scripts/run-mcp.sh"]
+      "args": [
+        "/Users/vinising/Desktop/Projects/Wrapper/scripts/run-mcp.sh"
+      ],
+      "env": {
+        "WRAPPER_WORKSPACE_ROOT": "/Users/vinising/Desktop/Projects/Wrapper",
+        "WRAPPER_RUNTIME": "ollama",
+        "WRAPPER_OLLAMA_MODEL": "gemma4:e4b",
+        "WRAPPER_OLLAMA_EMBED_MODEL": "nomic-embed-text",
+        "OLLAMA_HOST": "http://127.0.0.1:11434"
+      }
     }
   }
 }

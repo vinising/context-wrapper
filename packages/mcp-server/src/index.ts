@@ -1,4 +1,5 @@
-import { dirname } from "node:path";
+import { stat } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { z } from "zod";
 import { ContextStore, HandoffUpdate } from "@wrapper/context-store";
 import { PromptQuality, PromptQualitySchema, AgentBrief, AgentBriefSchema } from "@wrapper/schemas";
@@ -6,6 +7,7 @@ import { indexWorkspace, retrieveContext } from "@wrapper/semantic-index";
 import { createRuntimeGenerator } from "./runtime-generator.js";
 export { createRuntimeGenerator };
 import { RefineIntent } from "./prompt-assessment.js";
+import { recommendModelProfile } from "@wrapper/model-router";
 
 export type RefinePromptInput = {
   prompt: string;
@@ -144,6 +146,152 @@ export function createWrapperTools(options: { store: ContextStore; runtime: Runt
     });
   }
 
+  async function diagnoseSetup() {
+    const workspaceRoot = dirname(options.store.paths.root);
+    const profile = recommendModelProfile();
+    const checks: Array<{ name: string; status: "PASS" | "FAIL" | "WARN"; details: string }> = [];
+    const recommendations: string[] = [];
+
+    // 1. MCP Server Connection (Implicit PASS if this runs)
+    checks.push({
+      name: "MCP Server Connection",
+      status: "PASS",
+      details: "The Local Context Wrapper MCP sidecar is active and communicating successfully with Cursor."
+    });
+
+    // 2. Ollama Status
+    let ollamaRunning = false;
+    let ollamaModels: string[] = [];
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const res = await fetch("http://127.0.0.1:11434/api/tags", { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        ollamaRunning = true;
+        const data = (await res.json()) as { models?: Array<{ name: string }> };
+        ollamaModels = (data.models || []).map((m) => m.name);
+        checks.push({
+          name: "Ollama Service Status",
+          status: "PASS",
+          details: "Ollama background service is running and responsive."
+        });
+      }
+    } catch {
+      checks.push({
+        name: "Ollama Service Status",
+        status: "FAIL",
+        details: "Could not connect to Ollama at http://127.0.0.1:11434. Ensure Ollama is running (`ollama serve`)."
+      });
+      recommendations.push("Start Ollama service using `ollama serve` or open the Ollama app.");
+    }
+
+    // 3. Check Gemma model
+    if (ollamaRunning) {
+      const gemmaInstalled = ollamaModels.some((name) => name.startsWith("gemma4:e4b") || name.startsWith("gemma-3") || name.startsWith("gemma4") || name.startsWith("gemma2") || name.startsWith("gemma:"));
+      if (gemmaInstalled) {
+        checks.push({
+          name: "Ollama Model (gemma4:e4b)",
+          status: "PASS",
+          details: `Found gemma model in Ollama tags: ${ollamaModels.find((name) => name.includes("gemma")) || "gemma4:e4b"}.`
+        });
+      } else {
+        checks.push({
+          name: "Ollama Model (gemma4:e4b)",
+          status: "FAIL",
+          details: "Required model gemma4:e4b is missing from Ollama tags."
+        });
+        recommendations.push("Pull the missing gemma model by running `ollama pull gemma4:e4b`.");
+      }
+
+      // Check Embed model
+      const embedInstalled = ollamaModels.some((name) => name.startsWith("nomic-embed-text"));
+      if (embedInstalled) {
+        checks.push({
+          name: "Ollama Embed Model (nomic-embed-text)",
+          status: "PASS",
+          details: "Found nomic-embed-text model in Ollama tags."
+        });
+      } else {
+        checks.push({
+          name: "Ollama Embed Model (nomic-embed-text)",
+          status: "FAIL",
+          details: "Required embedding model nomic-embed-text is missing from Ollama tags."
+        });
+        recommendations.push("Pull the embedding model by running `ollama pull nomic-embed-text`.");
+      }
+    } else {
+      checks.push({
+        name: "Ollama Model (gemma4:e4b)",
+        status: "FAIL",
+        details: "Ollama is offline, cannot check installed models."
+      });
+      checks.push({
+        name: "Ollama Embed Model (nomic-embed-text)",
+        status: "FAIL",
+        details: "Ollama is offline, cannot check installed embedding models."
+      });
+    }
+
+    // 4. Check Python virtual environment
+    let hasVenv = false;
+    const venvNames = [".venv", "venv"];
+    for (const name of venvNames) {
+      try {
+        const s = await stat(join(workspaceRoot, name));
+        if (s.isDirectory()) {
+          hasVenv = true;
+          break;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (hasVenv) {
+      checks.push({
+        name: "Python Virtual Environment",
+        status: "PASS",
+        details: "Found active local python virtual environment for MLX acceleration."
+      });
+    } else {
+      if (profile.selectedTier === "fallback") {
+        checks.push({
+          name: "Python Virtual Environment",
+          status: "WARN",
+          details: "No local Python virtual environment found. Since this machine uses Ollama-fallback mode, Python/MLX is completely optional."
+        });
+      } else {
+        checks.push({
+          name: "Python Virtual Environment",
+          status: "WARN",
+          details: "No Python virtual environment found (.venv). Python/MLX environment is recommended for Apple Silicon native performance."
+        });
+        recommendations.push("To bootstrap the python MLX environment, run `npm run setup` in your terminal.");
+      }
+    }
+
+    // Determine overall status
+    const status = checks.some((c) => c.status === "FAIL")
+      ? "FAIL"
+      : checks.some((c) => c.status === "WARN")
+      ? "WARN"
+      : "PASS";
+
+    return {
+      status,
+      machineProfile: {
+        platform: profile.detected.platform,
+        arch: profile.detected.arch,
+        memoryGb: profile.detected.memoryGb,
+        selectedTier: profile.selectedTier,
+        recommendedModel: profile.modelId
+      },
+      checks,
+      recommendations
+    };
+  }
+
   return {
     refinePrompt,
     scorePromptQuality,
@@ -152,6 +300,7 @@ export function createWrapperTools(options: { store: ContextStore; runtime: Runt
     recommendClarifyingQuestions,
     indexWorkspace: indexWorkspaceTool,
     retrieveContext: retrieveContextTool,
-    buildAgentBrief
+    buildAgentBrief,
+    diagnoseSetup
   };
 }

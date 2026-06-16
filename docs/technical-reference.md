@@ -382,8 +382,8 @@ Refinement is **not automatic**. The local model runs only when you invoke it.
 | `.cursor/mcp.json` | Registers MCP server via `bash scripts/run-mcp.sh` |
 | `scripts/run-mcp.sh` | Sets default env (`WRAPPER_RUNTIME=ollama`, `gemma4:e4b`) and starts `tsx .../cli.ts` |
 | `.cursor/rules/local-context-wrapper.mdc` | Agent rule: do **not** auto-refine; use tools on request |
-| `.cursor/commands/refine-prompt.md` | `/refine-prompt` → call `refine_prompt` |
-| `.cursor/commands/refresh-handoff.md` | `/refresh-handoff` → call `update_context_handoff` |
+| `.cursor/commands/lcw-refine.md` | `/lcw-refine` → call `refine_prompt` |
+| `.cursor/commands/lcw-handoff.md` | `/lcw-handoff` → call `update_context_handoff` |
 
 After editing MCP config, reload the Cursor window so the sidecar connects.
 
@@ -427,8 +427,8 @@ Also run `npm run setup:workspace -- /path/to/your/project` so `.wrapper/` exist
 
 | Method | When to use |
 |--------|-------------|
-| `/refine-prompt` | In Cursor chat; Agent calls MCP `refine_prompt` |
-| `/refresh-handoff` | After a session milestone; updates context files |
+| `/lcw-refine` | In Cursor chat; Agent calls MCP `refine_prompt` |
+| `/lcw-handoff` | After a session milestone; updates context files |
 | `npm run smoke:refine -- "..."` | Terminal-only; no MCP client needed |
 | Ask Agent to call `refine_prompt` | Same as slash command if MCP is connected |
 
@@ -469,7 +469,7 @@ File: `packages/cursor-plugin/`
 Assets under `packages/cursor-plugin/assets/` mirror committed `.cursor/` content:
 
 - `rules/local-context-wrapper.mdc` — opt-in guidance (not auto-refine on every message)
-- `commands/refine-prompt.md`, `refresh-handoff.md` — slash command templates
+- `commands/lcw-refine.md`, `lcw-handoff.md` — slash command templates
 - `hooks/README.md` — guardrail notes (warn, don't rewrite built-in chat)
 
 Install into another project with `npm run setup:cursor -- /path/to/project`.
@@ -624,7 +624,7 @@ Run all: `npm test`
 ## 17. Known constraints
 
 1. **No transparent Cursor chat rewrite** — supported surfaces only (MCP, rules, commands, hooks).
-2. **Refinement is opt-in** — `/refine-prompt`, `smoke:refine`, or explicit MCP calls; normal chat is not auto-refined.
+2. **Refinement is opt-in** — `/lcw-refine`, `smoke:refine`, or explicit MCP calls; normal chat is not auto-refined.
 3. **Cursor main model stays hosted** — local model refines prompts; Cursor Agent still uses its configured model for coding.
 4. **Prompt history git-ignored** — reduces accidental inclusion in project-wide search; open files explicitly when needed.
 5. **MLX router vs Ollama** — hardware tier recommends MLX IDs; production path uses Ollama model tags independently.
@@ -660,7 +660,7 @@ scripts/
 .cursor/
 ├── mcp.json                         # Project MCP registration
 ├── rules/local-context-wrapper.mdc
-└── commands/                        # /refine-prompt, /refresh-handoff, /agent-brief, /index-workspace
+└── commands/                        # /lcw-refine, /lcw-handoff, /lcw-brief, /lcw-index, /lcw-auto
 ```
 
 ---
@@ -702,7 +702,7 @@ The `build_agent_brief` tool packages project context and retrieval hits into a 
 
 To maximize the value of the Local Context Wrapper, developers should follow these defined use cases and step-by-step workflows for each command.
 
-### 21.1 `/index-workspace` (Workspace Indexing)
+### 21.1 `/lcw-index` (Workspace Indexing)
 
 #### Defined Use Case
 Keeping the local semantic and lexical search index synchronized with the codebase. This ensures that context retrieval is accurate and up-to-date.
@@ -711,11 +711,11 @@ Keeping the local semantic and lexical search index synchronized with the codeba
 - **Onboarding/Setup**: Immediately after setting up the workspace or checking out a new branch.
 - **Upstream Updates**: After pulling the latest changes from the remote repository.
 - **Major Code Changes**: After completing a major feature, refactoring a module, or adding new files.
-- **Stale Retrieval**: When `/agent-brief` retrieval hits feel outdated or miss recently added symbols.
+- **Stale Retrieval**: When `/lcw-brief` retrieval hits feel outdated or miss recently added symbols.
 
 #### Step-by-Step Workflow
 1. **Trigger Indexing**:
-   - **In Cursor**: Type `/index-workspace` in the chat.
+   - **In Cursor**: Type `/lcw-index` in the chat.
    - **In Terminal**: Run `npm run smoke:index`.
 2. **Directory Traversal**: The tool recursively walks the workspace root, filtering out binary files and paths matching the `exclude` list in `.wrapper/policy.yaml`.
 3. **Chunking**: Text files are split into line-preserving segments of approximately 1800 characters.
@@ -726,7 +726,7 @@ Keeping the local semantic and lexical search index synchronized with the codeba
 
 ---
 
-### 21.2 `/refine-prompt` (Prompt Refinement)
+### 21.2 `/lcw-refine` (Prompt Refinement)
 
 #### Defined Use Case
 Polishing a rough, short, or ambiguous prompt into a highly structured, spec-driven instruction before beginning a complex task.
@@ -738,7 +738,7 @@ Polishing a rough, short, or ambiguous prompt into a highly structured, spec-dri
 
 #### Step-by-Step Workflow
 1. **Submit Rough Prompt**:
-   - **In Cursor**: Type `/refine-prompt <rough instruction>` (e.g., `/refine-prompt add a dark mode toggle`).
+   - **In Cursor**: Type `/lcw-refine <rough instruction>` (e.g., `/lcw-refine add a dark mode toggle`).
    - **In Terminal**: Run `npm run smoke:refine -- "<rough instruction>"`.
 2. **Local Assessment**: The local model evaluates the prompt against the current context handoff (`.wrapper/context/current.yaml`) to identify missing requirements.
 3. **Structured Response**: The local model generates a structured JSON payload containing:
@@ -754,7 +754,7 @@ Polishing a rough, short, or ambiguous prompt into a highly structured, spec-dri
 
 ---
 
-### 21.3 `/refresh-handoff` (Context Handoff)
+### 21.3 `/lcw-handoff` (Context Handoff)
 
 #### Defined Use Case
 Capturing the current state of the project (progress, focus, constraints, next steps) to maintain durable memory across separate chat sessions or developers.
@@ -765,7 +765,7 @@ Capturing the current state of the project (progress, focus, constraints, next s
 - **Context Switching**: Before closing the editor, starting a fresh Cursor chat, or handing the workspace off to another developer.
 
 #### Step-by-Step Workflow
-1. **Trigger Handoff**: Type `/refresh-handoff` in the Cursor chat.
+1. **Trigger Handoff**: Type `/lcw-handoff` in the Cursor chat.
 2. **Progress Synthesis**: The hosted Agent summarizes the recent changes and progress made in the current session.
 3. **MCP Call**: The Agent calls the `update_context_handoff` MCP tool with the updated fields:
    - `summary`: Concise summary of what has been built.
@@ -778,7 +778,7 @@ Capturing the current state of the project (progress, focus, constraints, next s
 
 ---
 
-### 21.4 `/agent-brief` (Agent Brief Generation)
+### 21.4 `/lcw-brief` (Agent Brief Generation)
 
 #### Defined Use Case
 Packaging task-specific context (including handoff, accepted decisions, and relevant codebase snippets) into a single, compact, and highly focused Markdown brief to launch a fresh chat or a sub-agent.
@@ -790,7 +790,7 @@ Packaging task-specific context (including handoff, accepted decisions, and rele
 
 #### Step-by-Step Workflow
 1. **Request Brief**:
-   - **In Cursor**: Type `/agent-brief "<task description>"` (e.g., `/agent-brief "implement dark mode toggle settings"`).
+   - **In Cursor**: Type `/lcw-brief "<task description>"` (e.g., `/lcw-brief "implement dark mode toggle settings"`).
    - **In Terminal**: Run `npm run smoke:brief -- "<task description>"`.
 2. **Local Retrieval**: The tool queries the local semantic/lexical index using the task description to retrieve the top-k relevant code snippets.
 3. **Context Assembly**: The tool reads the current context handoff and accepted architectural decisions.

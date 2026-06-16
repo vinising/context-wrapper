@@ -41,10 +41,12 @@ async function main(): Promise<void> {
   );
 
   await copyAsset("rules/local-context-wrapper.mdc", targetRoot);
-  await copyAsset("commands/refine-prompt.md", targetRoot);
-  await copyAsset("commands/refresh-handoff.md", targetRoot);
-  await copyAsset("commands/agent-brief.md", targetRoot);
-  await copyAsset("commands/index-workspace.md", targetRoot);
+  await copyAsset("commands/lcw-refine.md", targetRoot);
+  await copyAsset("commands/lcw-handoff.md", targetRoot);
+  await copyAsset("commands/lcw-brief.md", targetRoot);
+  await copyAsset("commands/lcw-index.md", targetRoot);
+  await copyAsset("commands/lcw-auto.md", targetRoot);
+  await copyAsset("commands/lcw-diagnose.md", targetRoot);
 
   console.log(JSON.stringify({ ok: true, targetRoot, wrapperRepoRoot, runMcpScript }, null, 2));
 }

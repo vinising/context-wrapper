@@ -3,7 +3,6 @@
 The user wants to update project memory. Call `update_context_handoff` after summarizing recent progress.
 
 Capture:
-
 - concise summary,
 - current focus,
 - important constraints,

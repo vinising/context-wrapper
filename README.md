@@ -36,10 +36,11 @@ This project includes a committed `.cursor/` folder:
 |------|---------|
 | `.cursor/mcp.json` | Registers the local MCP sidecar (`scripts/run-mcp.sh`) |
 | `.cursor/rules/local-context-wrapper.mdc` | Tells the Agent **not** to auto-refine; use tools on request |
-| `.cursor/commands/refine-prompt.md` | Slash command → `refine_prompt` MCP tool |
-| `.cursor/commands/refresh-handoff.md` | Slash command → `update_context_handoff` MCP tool |
-| `.cursor/commands/agent-brief.md` | Slash command → `build_agent_brief` MCP tool |
-| `.cursor/commands/index-workspace.md` | Slash command → `index_workspace` MCP tool |
+| `.cursor/commands/lcw-refine.md` | Slash command → `refine_prompt` MCP tool |
+| `.cursor/commands/lcw-handoff.md` | Slash command → `update_context_handoff` MCP tool |
+| `.cursor/commands/lcw-brief.md` | Slash command → `build_agent_brief` MCP tool |
+| `.cursor/commands/lcw-index.md` | Slash command → `index_workspace` MCP tool |
+| `.cursor/commands/lcw-auto.md` | Slash command → `autonomous` CLI runner |
 
 After opening this folder in Cursor, reload the window (or restart Cursor) so MCP picks up `.cursor/mcp.json`. Ensure Ollama is running if you use the default runtime.
 
@@ -63,7 +64,7 @@ Choose one of these — none run automatically on every chat message.
 
 ### 1. Slash command in Cursor
 
-Type `/refine-prompt` and include your rough request. The Agent should call the `refine_prompt` MCP tool and return the refined text plus `historyPath`.
+Type `/lcw-refine` and include your rough request. The Agent should call the `refine_prompt` MCP tool and return the refined text plus `historyPath`.
 
 ### 2. CLI smoke test (no Cursor)
 
@@ -80,21 +81,21 @@ With the sidecar connected, ask the Agent to call `refine_prompt` with your roug
 
 ### Refresh handoff
 
-Use `/refresh-handoff` after meaningful progress, or call `update_context_handoff` via MCP.
+Use `/lcw-handoff` after meaningful progress, or call `update_context_handoff` via MCP.
 
 ### Semantic Indexing & Agent Briefs
 
 To save tokens and keep Cursor's hosted Agent highly focused, you can index your workspace locally and build task-scoped execution briefs.
 
 #### 1. Index the workspace
-Type `/index-workspace` in Cursor, or run the CLI smoke test:
+Type `/lcw-index` in Cursor, or run the CLI smoke test:
 ```bash
 npm run smoke:index
 ```
 This walks your codebase, chunks files, and generates local embeddings using Ollama (defaulting to the `nomic-embed-text` model, and falling back to lexical term overlap if Ollama is offline). Chunks and manifest are saved under `.wrapper/index/` (which is git-ignored).
 
 #### 2. Build a task brief
-Type `/agent-brief "implement feature X"` in Cursor, or run the CLI smoke test:
+Type `/lcw-brief "implement feature X"` in Cursor, or run the CLI smoke test:
 ```bash
 npm run smoke:brief -- "implement feature X"
 ```
