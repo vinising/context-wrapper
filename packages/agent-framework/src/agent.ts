@@ -14,6 +14,7 @@ export class Agent {
   public systemInstructions: string;
   public workspaceRoot: string;
   public tools: ReturnType<typeof createWrapperTools>;
+  public store: ReturnType<typeof createContextStore>;
   protected runtime: ReturnType<typeof createRuntimeGenerator>;
 
   constructor(options: AgentOptions) {
@@ -24,6 +25,7 @@ export class Agent {
     
     this.runtime = createRuntimeGenerator();
     const store = createContextStore(this.workspaceRoot);
+    this.store = store;
     this.tools = createWrapperTools({
       store,
       runtime: this.runtime

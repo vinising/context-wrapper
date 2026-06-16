@@ -99,6 +99,21 @@ export const WorkspacePolicySchema = z.object({
     enabled: true,
     directory: ".wrapper/runs",
     maxEntries: 10
+  }),
+  autonomous: z.object({
+    interactiveApproval: z.boolean().default(true),
+    maxTaskTurns: z.number().int().positive().default(5),
+    maxFilesModified: z.number().int().positive().default(10),
+    forcedTier: z.enum(["tier1_local", "tier2_hybrid", "tier3_hosted", "auto"]).default("auto"),
+    autoValidate: z.boolean().default(true),
+    autoRollbackOnFailure: z.boolean().default(false)
+  }).default({
+    interactiveApproval: true,
+    maxTaskTurns: 5,
+    maxFilesModified: 10,
+    forcedTier: "auto",
+    autoValidate: true,
+    autoRollbackOnFailure: false
   })
 });
 

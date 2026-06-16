@@ -35,6 +35,14 @@ const mockPolicy: WorkspacePolicy = {
     enabled: true,
     directory: ".wrapper/runs",
     maxEntries: 5
+  },
+  autonomous: {
+    interactiveApproval: true,
+    maxTaskTurns: 5,
+    maxFilesModified: 10,
+    forcedTier: "auto",
+    autoValidate: true,
+    autoRollbackOnFailure: false
   }
 };
 

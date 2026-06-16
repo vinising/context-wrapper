@@ -143,7 +143,7 @@ async function main() {
 
       // Poll up to 5 times
       for (let i = 0; i < 5; i++) {
-        await new Promise((r) => setTimeout(resolve, 1500));
+        await new Promise((r) => setTimeout(r, 1500));
         running = checkOllamaRunning();
         if (running) break;
       }

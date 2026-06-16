@@ -40,7 +40,25 @@ export class Orchestrator extends Agent {
     });
   }
 
-  public async determineComplexityTier(epic: string): Promise<"tier1_local" | "tier2_hybrid" | "tier3_hosted"> {
+  public async determineComplexityTier(
+    epic: string,
+    options: { forcedTier?: "tier1_local" | "tier2_hybrid" | "tier3_hosted" | "auto" } = {}
+  ): Promise<"tier1_local" | "tier2_hybrid" | "tier3_hosted"> {
+    // Check override forcedTier first
+    if (options.forcedTier && options.forcedTier !== "auto") {
+      return options.forcedTier;
+    }
+
+    // Check policy forcedTier next
+    try {
+      const policy = await this.store.readPolicy();
+      if (policy.autonomous?.forcedTier && policy.autonomous.forcedTier !== "auto") {
+        return policy.autonomous.forcedTier;
+      }
+    } catch {
+      // Ignore policy read errors during routing
+    }
+
     const epicLower = epic.toLowerCase();
 
     // Heuristics Layer
@@ -102,9 +120,17 @@ export class Orchestrator extends Agent {
     return "tier2_hybrid";
   }
 
-  public async planEpic(epic: string, options: { bypassRouting?: boolean } = {}): Promise<Milestone[]> {
+  public async planEpic(
+    epic: string,
+    options: {
+      bypassRouting?: boolean;
+      forcedTier?: "tier1_local" | "tier2_hybrid" | "tier3_hosted" | "auto";
+    } = {}
+  ): Promise<Milestone[]> {
     // 1. Determine tier
-    const tier = options.bypassRouting ? "tier1_local" : await this.determineComplexityTier(epic);
+    const tier = options.bypassRouting
+      ? "tier1_local"
+      : await this.determineComplexityTier(epic, { forcedTier: options.forcedTier });
     
     // Track paid token estimates based on tier
     let tokensHostedInput = 0;

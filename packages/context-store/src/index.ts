@@ -52,6 +52,14 @@ const defaultPolicy: WorkspacePolicy = {
     enabled: true,
     directory: ".wrapper/runs",
     maxEntries: 10
+  },
+  autonomous: {
+    interactiveApproval: true,
+    maxTaskTurns: 5,
+    maxFilesModified: 10,
+    forcedTier: "auto",
+    autoValidate: true,
+    autoRollbackOnFailure: false
   }
 };
 
@@ -125,6 +133,10 @@ export function createContextStore(workspaceRoot: string) {
       agentBrief: {
         ...defaultPolicy.agentBrief,
         ...parsed?.agentBrief
+      },
+      autonomous: {
+        ...defaultPolicy.autonomous,
+        ...parsed?.autonomous
       }
     });
   }
