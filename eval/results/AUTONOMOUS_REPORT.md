@@ -11,8 +11,10 @@ This report benchmarks the performance, modularity, and cost of pure-hosted auto
 | **Same-File Overwrites / Churn** | 3 rewrites | 1 rewrites |
 | **Files Modified** | src/emitter.ts | none |
 | **Lines Added/Deleted** | +7/-0 lines | +0/-0 lines |
-| **Hosted (Paid) Tokens** | 420 tokens | 110 tokens |
-| **Local (Free) Tokens** | 0 tokens | 240 tokens |
+| **Hosted Input Tokens (Paid)** | 18,000 tokens | 5,000 tokens |
+| **Hosted Output Tokens (Paid)** | 3,600 tokens | 3,000 tokens |
+| **Total Hosted Tokens (Paid)** | 21,600 tokens | 8,000 tokens |
+| **Local (Free) Tokens** | 0 tokens | 6,000 tokens |
 
 ## Code Quality & Architecture Judgment
 

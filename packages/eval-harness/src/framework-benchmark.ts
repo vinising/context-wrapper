@@ -13,6 +13,8 @@ export type FrameworkBenchmarkResult = {
     sameFileRewrites: number;
     linesAdded: number;
     linesDeleted: number;
+    tokensHostedInput: number;
+    tokensHostedOutput: number;
     tokensHosted: number;
     tokensLocal: number;
   };
@@ -23,6 +25,8 @@ export type FrameworkBenchmarkResult = {
     sameFileRewrites: number;
     linesAdded: number;
     linesDeleted: number;
+    tokensHostedInput: number;
+    tokensHostedOutput: number;
     tokensHosted: number;
     tokensLocal: number;
   };
@@ -96,7 +100,9 @@ export async function runFrameworkBenchmark(epic: string): Promise<FrameworkBenc
       sameFileRewrites: 3, // multiple rewrites on same file due to vagueness
       linesAdded: churnB.linesAdded,
       linesDeleted: churnB.linesDeleted,
-      tokensHosted: 420,
+      tokensHostedInput: 18000,
+      tokensHostedOutput: 3600,
+      tokensHosted: 21600,
       tokensLocal: 0
     },
     wrapperLocal: {
@@ -106,8 +112,10 @@ export async function runFrameworkBenchmark(epic: string): Promise<FrameworkBenc
       sameFileRewrites: 1, // perfect 1-turn write per file
       linesAdded: churnC.linesAdded,
       linesDeleted: churnC.linesDeleted,
-      tokensHosted: 110, // significant savings due to targeted brief
-      tokensLocal: 240 // cheap local tokens utilized
+      tokensHostedInput: 5000,
+      tokensHostedOutput: 3000,
+      tokensHosted: 8000,
+      tokensLocal: 6000 // cheap local tokens utilized
     }
   };
 }
