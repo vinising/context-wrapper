@@ -1,0 +1,372 @@
+[
+  {
+    "caseId": "T01",
+    "rawPrompt": "This is the wrapper project. It's intention is to deploy a globally available local gemma-4 or equally or higher advanced model optimized for the use case , according to whatever pc / spec the person is running. User can chose to upgrade to higher model. \nThe purpose is , there should be always be some sort of seamless context handoff available and updated time to time as the chat progresses. Sometimes user is lazy or just doesn't want to optimize the prompt and feed the context. Leading to garbage in and garbage out if the \"working model\" treats the prompt as is, and user has not \"prompted\" to follow best practice or to grill him on questions , leading to unrealiable outputs. \nThe local gemma model would hence be able to do the prompt refinement and context feed correctly, so user can be rest assured he doesn't have to add two steps between each prompt, leading to faster TAT and hgiher quality outputs when doing spec-driven-development using modern vibe coding practices. Implement other data backed practices such as folder segregation , maintaining yaml etc.",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: This is the wrapper project. It's intention is to deploy a globally available local gemma-4 or equally or higher advanced model optimized for the use case , according to whatever pc / spec the person is running. User can chose to upgrade to higher model. \nThe purpose is , there should be always be some sort of seamless context handoff available and updated time to time as the chat progresses. Sometimes user is lazy or just doesn't want to optimize the prompt and feed the context. Leading to garbage in and garbage out if the \"working model\" treats the prompt as is, and user has not \"prompted\" to follow best practice or to grill him on questions , leading to unrealiable outputs. \nThe local gemma model would hence be able to do the prompt refinement and context feed correctly, so user can be rest assured he doesn't have to add two steps between each prompt, leading to faster TAT and hgiher quality outputs when doing spec-driven-development using modern vibe coding practices. Implement other data backed practices such as folder segregation , maintaining yaml etc.\nMissing context: success criteria\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "baseline_raw": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 1,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T02",
+    "rawPrompt": "Local Context Wrapper Plan\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: Local Context Wrapper Plan\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.\nMissing context: goal, success criteria\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "baseline_raw": {
+        "score": 100,
+        "goal_clarity": 2,
+        "scope_bounds": 4,
+        "acceptance_criteria": 1,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T03",
+    "rawPrompt": "Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.\nMissing context: goal, success criteria\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "baseline_raw": {
+        "score": 100,
+        "goal_clarity": 2,
+        "scope_bounds": 4,
+        "acceptance_criteria": 1,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T04",
+    "rawPrompt": "Initialized empty Git repository in /Users/vinising/Desktop/Projects/Wrapper/.git/",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: Initialized empty Git repository in /Users/vinising/Desktop/Projects/Wrapper/.git/\nMissing context: goal, success criteria, constraints, detail\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "baseline_raw": {
+        "score": 42,
+        "goal_clarity": 2,
+        "scope_bounds": 2,
+        "acceptance_criteria": 1,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T05",
+    "rawPrompt": "Go with the initial install and run. How do we use this structure / project in existing or new projects.",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: Go with the initial install and run. How do we use this structure / project in existing or new projects.\nMissing context: goal, success criteria, constraints\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "baseline_raw": {
+        "score": 70,
+        "goal_clarity": 2,
+        "scope_bounds": 2,
+        "acceptance_criteria": 1,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T06",
+    "rawPrompt": "Let's setup for this project, then use it to test the working and make additional improvements?",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: Let's setup for this project, then use it to test the working and make additional improvements?\nMissing context: goal, constraints\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "baseline_raw": {
+        "score": 92,
+        "goal_clarity": 2,
+        "scope_bounds": 2,
+        "acceptance_criteria": 4,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T07",
+    "rawPrompt": "Go ahead, we need to test the real thing with real local model.",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: Go ahead, we need to test the real thing with real local model.\nMissing context: goal\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "baseline_raw": {
+        "score": 86,
+        "goal_clarity": 2,
+        "scope_bounds": 2,
+        "acceptance_criteria": 4,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T08",
+    "rawPrompt": "I guess the ssl error may be due to not accepting terms and conditions, and not providing you the hugging face api ?",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: I guess the ssl error may be due to not accepting terms and conditions, and not providing you the hugging face api ?\nMissing context: goal, success criteria, constraints\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "baseline_raw": {
+        "score": 76,
+        "goal_clarity": 2,
+        "scope_bounds": 4,
+        "acceptance_criteria": 1,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T09",
+    "rawPrompt": "which model am i looking for if I want to download this manually? Maybe you can just do the tests and then point to that if things still fail whenever a user is setting this up.",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: which model am i looking for if I want to download this manually? Maybe you can just do the tests and then point to that if things still fail whenever a user is setting this up.\nMissing context: goal, constraints\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "baseline_raw": {
+        "score": 100,
+        "goal_clarity": 2,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  },
+  {
+    "caseId": "T10",
+    "rawPrompt": "@/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/terminals/2.txt:84-89 \nGive me the hf comminity link where I need to accept the tos",
+    "wrapperRefined": "Refined prompt:\nProject: Wrapper Workspace\nGoal: Maintain local context handoff and prompt refinement for Cursor.\nCurrent focus: Capture rough prompts, context, and decisions for Cursor-assisted work.\nUser prompt: @/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/terminals/2.txt:84-89 \nGive me the hf comminity link where I need to accept the tos\nMissing context: goal, success criteria\n\nModel recommendation: mlx-community/gemma-3-4b-it-4bit\nFallback mode active: set WRAPPER_MLX_COMMAND_JSON to bridge local MLX inference output.",
+    "verdicts": {
+      "hosted_refine": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "wrapper_local": {
+        "score": 100,
+        "goal_clarity": 4,
+        "scope_bounds": 4,
+        "acceptance_criteria": 4,
+        "constraints": 4,
+        "verification_steps": 4,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      },
+      "baseline_raw": {
+        "score": 58,
+        "goal_clarity": 2,
+        "scope_bounds": 2,
+        "acceptance_criteria": 1,
+        "constraints": 2,
+        "verification_steps": 1,
+        "context_grounding": 3,
+        "reason": "Heuristic scoring fallback due to: Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    }
+  }
+]

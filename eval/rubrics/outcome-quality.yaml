@@ -1,0 +1,48 @@
+# Outcome Quality Evaluation Rubric
+version: 1
+
+dimensions:
+  requirement_coverage:
+    description: "Did the generated implementation address the user's explicit ask? (1 = completely missed or broke requirements, 5 = fully implemented all features specified)"
+    range: [1, 5]
+  scope_discipline:
+    description: "Did the agent avoid unnecessary or unrelated refactors/changes? (1 = touched irrelevant code and added bloat, 5 = highly disciplined, minimalist changes)"
+    range: [1, 5]
+  correctness:
+    description: "Does the output code compile, build, and pass its smoke tests? (1 = broken/buggy code, 5 = perfectly working, clean logic that runs flawlessly)"
+    range: [1, 5]
+  actionability:
+    description: "Could a fresh agent or developer easily pick up the workspace and continue without guessing? (1 = messy, undocumented, or confusing state, 5 = clear, documented files with well-defined next steps)"
+    range: [1, 5]
+
+judge_prompt_template: |
+  You are an expert software engineer and code reviewer evaluating the quality of code changes produced by a coding agent.
+  You will receive the original task description, the files modified, and the code changes made.
+
+  Evaluate the quality of the outcome:
+  ---
+  Original Task:
+  {task}
+
+  Refined Prompt used (if any):
+  {refinedPrompt}
+
+  Files Modified:
+  {filesTouched}
+
+  Diff / Changes:
+  {diffText}
+  ---
+
+  Score each dimension on a scale of 1 to 5.
+  Provide an overall final score between 0 and 100 representing the effectiveness and completeness of the solution.
+
+  Return your evaluation ONLY in the following valid JSON format:
+  {{
+    "score": <0 to 100>,
+    "requirement_coverage": <1 to 5>,
+    "scope_discipline": <1 to 5>,
+    "correctness": <1 to 5>,
+    "actionability": <1 to 5>,
+    "reason": "<detailed explanation of your code review and ratings>"
+  }}

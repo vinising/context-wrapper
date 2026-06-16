@@ -1,0 +1,693 @@
+{
+  "totalCases": 31,
+  "totalBaselineTokens": 2412,
+  "totalBaselinePromptTokens": 1681,
+  "totalBaselineCompletionTokens": 731,
+  "totalWrapperTokens": 2524,
+  "totalWrapperPromptTokens": 2076,
+  "totalWrapperCompletionTokens": 448,
+  "totalSavingsHosted": -112,
+  "cases": [
+    {
+      "id": "T01",
+      "rawPromptSnippet": "This is the wrapper project. It's intention is to deploy a globally available local gemma-4 or equal...",
+      "intent": "implementation",
+      "toolsUsedCount": 6,
+      "toolsUsed": [
+        "ReadFile",
+        "Glob",
+        "Shell",
+        "AskQuestion",
+        "Subagent",
+        "CreatePlan"
+      ],
+      "followUpTurns": 10,
+      "baselineRawEstimate": {
+        "promptTokens": 269,
+        "completionTokens": 26,
+        "totalTokens": 295
+      },
+      "wrapperEstimate": {
+        "promptTokens": 282,
+        "completionTokens": 16,
+        "totalTokens": 298
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T02",
+      "rawPromptSnippet": "Local Context Wrapper Plan\n\nImplement the plan as specified, it is attached for your reference. Do N...",
+      "intent": "planning",
+      "toolsUsedCount": 6,
+      "toolsUsed": [
+        "ReadFile",
+        "TodoWrite",
+        "ApplyPatch",
+        "Shell",
+        "ReadLints",
+        "Glob"
+      ],
+      "followUpTurns": 44,
+      "baselineRawEstimate": {
+        "promptTokens": 81,
+        "completionTokens": 26,
+        "totalTokens": 107
+      },
+      "wrapperEstimate": {
+        "promptTokens": 94,
+        "completionTokens": 16,
+        "totalTokens": 110
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T03",
+      "rawPromptSnippet": "Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself...",
+      "intent": "planning",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 0,
+      "baselineRawEstimate": {
+        "promptTokens": 74,
+        "completionTokens": 1,
+        "totalTokens": 75
+      },
+      "wrapperEstimate": {
+        "promptTokens": 87,
+        "completionTokens": 0,
+        "totalTokens": 87
+      },
+      "savingsHosted": -12
+    },
+    {
+      "id": "T04",
+      "rawPromptSnippet": "Initialized empty Git repository in /Users/vinising/Desktop/Projects/Wrapper/.git/",
+      "intent": "implementation",
+      "toolsUsedCount": 1,
+      "toolsUsed": [
+        "Shell"
+      ],
+      "followUpTurns": 2,
+      "baselineRawEstimate": {
+        "promptTokens": 21,
+        "completionTokens": 26,
+        "totalTokens": 47
+      },
+      "wrapperEstimate": {
+        "promptTokens": 34,
+        "completionTokens": 16,
+        "totalTokens": 50
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T05",
+      "rawPromptSnippet": "Go with the initial install and run. How do we use this structure / project in existing or new proje...",
+      "intent": "implementation",
+      "toolsUsedCount": 3,
+      "toolsUsed": [
+        "Shell",
+        "ReadFile",
+        "AwaitShell"
+      ],
+      "followUpTurns": 7,
+      "baselineRawEstimate": {
+        "promptTokens": 26,
+        "completionTokens": 26,
+        "totalTokens": 52
+      },
+      "wrapperEstimate": {
+        "promptTokens": 39,
+        "completionTokens": 16,
+        "totalTokens": 55
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T06",
+      "rawPromptSnippet": "Let's setup for this project, then use it to test the working and make additional improvements?",
+      "intent": "implementation",
+      "toolsUsedCount": 4,
+      "toolsUsed": [
+        "ReadFile",
+        "ApplyPatch",
+        "Shell",
+        "ReadLints"
+      ],
+      "followUpTurns": 15,
+      "baselineRawEstimate": {
+        "promptTokens": 24,
+        "completionTokens": 26,
+        "totalTokens": 50
+      },
+      "wrapperEstimate": {
+        "promptTokens": 37,
+        "completionTokens": 16,
+        "totalTokens": 53
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T07",
+      "rawPromptSnippet": "Go ahead, we need to test the real thing with real local model.",
+      "intent": "implementation",
+      "toolsUsedCount": 4,
+      "toolsUsed": [
+        "ReadFile",
+        "ApplyPatch",
+        "Shell",
+        "ReadLints"
+      ],
+      "followUpTurns": 17,
+      "baselineRawEstimate": {
+        "promptTokens": 16,
+        "completionTokens": 26,
+        "totalTokens": 42
+      },
+      "wrapperEstimate": {
+        "promptTokens": 29,
+        "completionTokens": 16,
+        "totalTokens": 45
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T08",
+      "rawPromptSnippet": "I guess the ssl error may be due to not accepting terms and conditions, and not providing you the hu...",
+      "intent": "debugging",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 29,
+        "completionTokens": 26,
+        "totalTokens": 55
+      },
+      "wrapperEstimate": {
+        "promptTokens": 42,
+        "completionTokens": 16,
+        "totalTokens": 58
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T09",
+      "rawPromptSnippet": "which model am i looking for if I want to download this manually? Maybe you can just do the tests an...",
+      "intent": "debugging",
+      "toolsUsedCount": 2,
+      "toolsUsed": [
+        "Shell",
+        "ApplyPatch"
+      ],
+      "followUpTurns": 4,
+      "baselineRawEstimate": {
+        "promptTokens": 45,
+        "completionTokens": 26,
+        "totalTokens": 71
+      },
+      "wrapperEstimate": {
+        "promptTokens": 57,
+        "completionTokens": 16,
+        "totalTokens": 73
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T10",
+      "rawPromptSnippet": "@/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/terminals/2.txt:84-89 \nGiv...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 40,
+        "completionTokens": 26,
+        "totalTokens": 66
+      },
+      "wrapperEstimate": {
+        "promptTokens": 52,
+        "completionTokens": 16,
+        "totalTokens": 68
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T11",
+      "rawPromptSnippet": "@/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/terminals/2.txt:75-79",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 24,
+        "completionTokens": 26,
+        "totalTokens": 50
+      },
+      "wrapperEstimate": {
+        "promptTokens": 37,
+        "completionTokens": 16,
+        "totalTokens": 53
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T12",
+      "rawPromptSnippet": "login didn't work. @/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/termina...",
+      "intent": "implementation",
+      "toolsUsedCount": 5,
+      "toolsUsed": [
+        "Shell",
+        "ReadFile",
+        "WebSearch",
+        "ApplyPatch",
+        "ReadLints"
+      ],
+      "followUpTurns": 11,
+      "baselineRawEstimate": {
+        "promptTokens": 47,
+        "completionTokens": 26,
+        "totalTokens": 73
+      },
+      "wrapperEstimate": {
+        "promptTokens": 59,
+        "completionTokens": 16,
+        "totalTokens": 75
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T13",
+      "rawPromptSnippet": "don't stop until setup completes, you can run the necessary commands in shell",
+      "intent": "implementation",
+      "toolsUsedCount": 3,
+      "toolsUsed": [
+        "Shell",
+        "AwaitShell",
+        "ReadLints"
+      ],
+      "followUpTurns": 11,
+      "baselineRawEstimate": {
+        "promptTokens": 20,
+        "completionTokens": 26,
+        "totalTokens": 46
+      },
+      "wrapperEstimate": {
+        "promptTokens": 32,
+        "completionTokens": 16,
+        "totalTokens": 48
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T14",
+      "rawPromptSnippet": "Decide on .wrapper yourself.\nWhere can I see the outputs? maybe create a folder , each prompt get's ...",
+      "intent": "implementation",
+      "toolsUsedCount": 5,
+      "toolsUsed": [
+        "ReadFile",
+        "ApplyPatch",
+        "Shell",
+        "Glob",
+        "ReadLints"
+      ],
+      "followUpTurns": 23,
+      "baselineRawEstimate": {
+        "promptTokens": 106,
+        "completionTokens": 26,
+        "totalTokens": 132
+      },
+      "wrapperEstimate": {
+        "promptTokens": 119,
+        "completionTokens": 16,
+        "totalTokens": 135
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T15",
+      "rawPromptSnippet": "Because this project won't be modified very frequently, it would make sense to have a more detailed ...",
+      "intent": "implementation",
+      "toolsUsedCount": 5,
+      "toolsUsed": [
+        "Glob",
+        "ReadFile",
+        "Read",
+        "Write",
+        "StrReplace"
+      ],
+      "followUpTurns": 5,
+      "baselineRawEstimate": {
+        "promptTokens": 60,
+        "completionTokens": 26,
+        "totalTokens": 86
+      },
+      "wrapperEstimate": {
+        "promptTokens": 72,
+        "completionTokens": 16,
+        "totalTokens": 88
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T16",
+      "rawPromptSnippet": "just to understand, this project itself is self wired right, then why didn't my last prompt create a...",
+      "intent": "implementation",
+      "toolsUsedCount": 1,
+      "toolsUsed": [
+        "Glob"
+      ],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 89,
+        "completionTokens": 26,
+        "totalTokens": 115
+      },
+      "wrapperEstimate": {
+        "promptTokens": 102,
+        "completionTokens": 16,
+        "totalTokens": 118
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T17",
+      "rawPromptSnippet": "If the available MCP tools do not fully support what the user asked you to do, complete the work you...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 0,
+      "baselineRawEstimate": {
+        "promptTokens": 85,
+        "completionTokens": 1,
+        "totalTokens": 86
+      },
+      "wrapperEstimate": {
+        "promptTokens": 98,
+        "completionTokens": 0,
+        "totalTokens": 98
+      },
+      "savingsHosted": -12
+    },
+    {
+      "id": "T18",
+      "rawPromptSnippet": "just to understand, this project itself is self wired right, then why didn't my last prompt create a...",
+      "intent": "implementation",
+      "toolsUsedCount": 1,
+      "toolsUsed": [
+        "Shell"
+      ],
+      "followUpTurns": 2,
+      "baselineRawEstimate": {
+        "promptTokens": 89,
+        "completionTokens": 26,
+        "totalTokens": 115
+      },
+      "wrapperEstimate": {
+        "promptTokens": 102,
+        "completionTokens": 16,
+        "totalTokens": 118
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T19",
+      "rawPromptSnippet": "your approach is fine, maybe I don't want every prompt refined. I should invoke it via / command or ...",
+      "intent": "implementation",
+      "toolsUsedCount": 6,
+      "toolsUsed": [
+        "Glob",
+        "Read",
+        "Grep",
+        "Write",
+        "StrReplace",
+        "Shell"
+      ],
+      "followUpTurns": 19,
+      "baselineRawEstimate": {
+        "promptTokens": 55,
+        "completionTokens": 26,
+        "totalTokens": 81
+      },
+      "wrapperEstimate": {
+        "promptTokens": 68,
+        "completionTokens": 16,
+        "totalTokens": 84
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T20",
+      "rawPromptSnippet": "how does the scoring happen? /refine-prompt",
+      "intent": "implementation",
+      "toolsUsedCount": 2,
+      "toolsUsed": [
+        "Grep",
+        "Read"
+      ],
+      "followUpTurns": 3,
+      "baselineRawEstimate": {
+        "promptTokens": 11,
+        "completionTokens": 26,
+        "totalTokens": 37
+      },
+      "wrapperEstimate": {
+        "promptTokens": 24,
+        "completionTokens": 16,
+        "totalTokens": 40
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T21",
+      "rawPromptSnippet": "I am not sure how accurate this scoring methodology is. Either we can remove this or implement LLM b...",
+      "intent": "implementation",
+      "toolsUsedCount": 5,
+      "toolsUsed": [
+        "Read",
+        "Grep",
+        "Write",
+        "StrReplace",
+        "Shell"
+      ],
+      "followUpTurns": 14,
+      "baselineRawEstimate": {
+        "promptTokens": 31,
+        "completionTokens": 26,
+        "totalTokens": 57
+      },
+      "wrapperEstimate": {
+        "promptTokens": 44,
+        "completionTokens": 16,
+        "totalTokens": 60
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T22",
+      "rawPromptSnippet": "in the second last prompt i had done \"how does the scoring happen? '/refine-prompt' \" without single...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 35,
+        "completionTokens": 26,
+        "totalTokens": 61
+      },
+      "wrapperEstimate": {
+        "promptTokens": 48,
+        "completionTokens": 16,
+        "totalTokens": 64
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T23",
+      "rawPromptSnippet": "how would that be any different or more useful that simply asking cursor inbuilt chat agent to first...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 34,
+        "completionTokens": 26,
+        "totalTokens": 60
+      },
+      "wrapperEstimate": {
+        "promptTokens": 47,
+        "completionTokens": 16,
+        "totalTokens": 63
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T24",
+      "rawPromptSnippet": "And what would be a strong addition to make use of local LLM to reduce the token requirement and bet...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 28,
+        "completionTokens": 26,
+        "totalTokens": 54
+      },
+      "wrapperEstimate": {
+        "promptTokens": 41,
+        "completionTokens": 16,
+        "totalTokens": 57
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T25",
+      "rawPromptSnippet": "So 1. Context packager (best ROI) --> will be sort of a handoff command? when switching from long ru...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 32,
+        "completionTokens": 26,
+        "totalTokens": 58
+      },
+      "wrapperEstimate": {
+        "promptTokens": 44,
+        "completionTokens": 16,
+        "totalTokens": 60
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T26",
+      "rawPromptSnippet": "so a better use of agent-brief is when creating sub-agents for sub-tasks?\nis refresh-handoff our cus...",
+      "intent": "implementation",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 33,
+        "completionTokens": 26,
+        "totalTokens": 59
+      },
+      "wrapperEstimate": {
+        "promptTokens": 46,
+        "completionTokens": 16,
+        "totalTokens": 62
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T27",
+      "rawPromptSnippet": "2. Local retrieval / index (biggest long-term win) ===> is this already built-in?",
+      "intent": "review",
+      "toolsUsedCount": 3,
+      "toolsUsed": [
+        "Grep",
+        "Read",
+        "Glob"
+      ],
+      "followUpTurns": 3,
+      "baselineRawEstimate": {
+        "promptTokens": 21,
+        "completionTokens": 26,
+        "totalTokens": 47
+      },
+      "wrapperEstimate": {
+        "promptTokens": 33,
+        "completionTokens": 16,
+        "totalTokens": 49
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T28",
+      "rawPromptSnippet": "Alright. Let's plan and build the agent-brief and semantic-index. \nThen explain what would have been...",
+      "intent": "planning",
+      "toolsUsedCount": 4,
+      "toolsUsed": [
+        "Read",
+        "Glob",
+        "AskQuestion",
+        "CreatePlan"
+      ],
+      "followUpTurns": 5,
+      "baselineRawEstimate": {
+        "promptTokens": 45,
+        "completionTokens": 26,
+        "totalTokens": 71
+      },
+      "wrapperEstimate": {
+        "promptTokens": 57,
+        "completionTokens": 16,
+        "totalTokens": 73
+      },
+      "savingsHosted": -2
+    },
+    {
+      "id": "T29",
+      "rawPromptSnippet": "Agent Brief + Semantic Index\n\nImplement the plan as specified, it is attached for your reference. Do...",
+      "intent": "planning",
+      "toolsUsedCount": 2,
+      "toolsUsed": [
+        "TodoWrite",
+        "Read"
+      ],
+      "followUpTurns": 1,
+      "baselineRawEstimate": {
+        "promptTokens": 82,
+        "completionTokens": 26,
+        "totalTokens": 108
+      },
+      "wrapperEstimate": {
+        "promptTokens": 95,
+        "completionTokens": 16,
+        "totalTokens": 111
+      },
+      "savingsHosted": -3
+    },
+    {
+      "id": "T30",
+      "rawPromptSnippet": "Implement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself...",
+      "intent": "planning",
+      "toolsUsedCount": 0,
+      "toolsUsed": [],
+      "followUpTurns": 0,
+      "baselineRawEstimate": {
+        "promptTokens": 74,
+        "completionTokens": 1,
+        "totalTokens": 75
+      },
+      "wrapperEstimate": {
+        "promptTokens": 87,
+        "completionTokens": 0,
+        "totalTokens": 87
+      },
+      "savingsHosted": -12
+    },
+    {
+      "id": "T31",
+      "rawPromptSnippet": "I'm sure the readme and technical-reference has been updated already regarding our project. could yo...",
+      "intent": "implementation",
+      "toolsUsedCount": 4,
+      "toolsUsed": [
+        "Grep",
+        "Read",
+        "StrReplace",
+        "Shell"
+      ],
+      "followUpTurns": 7,
+      "baselineRawEstimate": {
+        "promptTokens": 55,
+        "completionTokens": 26,
+        "totalTokens": 81
+      },
+      "wrapperEstimate": {
+        "promptTokens": 68,
+        "completionTokens": 16,
+        "totalTokens": 84
+      },
+      "savingsHosted": -3
+    }
+  ]
+}

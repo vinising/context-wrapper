@@ -1,0 +1,34 @@
+---
+description: Local context wrapper MCP tools — use on demand, not on every message
+alwaysApply: true
+---
+
+# Local Context Wrapper
+
+This workspace has a local MCP sidecar for prompt refinement, context handoff, semantic indexing, and agent briefs. **Do not run tools automatically on every message.**
+
+## When to use the sidecar
+
+Only call wrapper MCP tools when the user explicitly asks or uses a slash command:
+
+- `/refine-prompt` or "refine this prompt" -> call `refine_prompt`
+- `/refresh-handoff` or "update the handoff" -> call `update_context_handoff`
+- `/agent-brief` or "build a brief for task X" -> call `build_agent_brief`
+- `/index-workspace` or "index the workspace" -> call `index_workspace`
+
+For normal chat and implementation tasks, proceed without calling these tools unless requested.
+
+## Agent Briefs & Retrieval
+
+1. When starting a new major task or creating a sub-agent, run `/agent-brief` with the task description.
+2. This reads the handoff, retrieves relevant code snippets, and uses the local model to build a compact, task-scoped brief under `.wrapper/runs/`.
+3. Reference the brief file using `@` in a new chat or sub-agent to save tokens and keep the agent focused.
+
+## Semantic Indexing
+
+1. Run `/index-workspace` after major codebase changes or when retrieval results feel stale.
+2. This walks the codebase, chunks files, and generates local embeddings using Ollama (falling back to lexical overlap if Ollama is unavailable).
+
+## Context Handoff
+
+After meaningful progress, call `update_context_handoff` to update `.wrapper/context/handoff.md` and `current.yaml` with a concise summary, current focus, constraints, and next steps.

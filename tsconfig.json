@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
+    "paths": {
+      "@wrapper/schemas": [
+        "./packages/schemas/src/index.ts"
+      ],
+      "@wrapper/context-store": [
+        "./packages/context-store/src/index.ts"
+      ],
+      "@wrapper/model-router": [
+        "./packages/model-router/src/index.ts"
+      ],
+      "@wrapper/mcp-server": [
+        "./packages/mcp-server/src/index.ts"
+      ],
+      "@wrapper/mlx-runner": [
+        "./packages/mlx-runner/src/index.ts"
+      ],
+      "@wrapper/semantic-index": [
+        "./packages/semantic-index/src/index.ts"
+      ],
+      "@wrapper/eval-harness": [
+        "./packages/eval-harness/src/index.ts"
+      ],
+      "@wrapper/agent-framework": [
+        "./packages/agent-framework/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "packages/**/*.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

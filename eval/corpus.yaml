@@ -1,0 +1,490 @@
+- id: T01
+  rawPrompt: >-
+    This is the wrapper project. It's intention is to deploy a globally
+    available local gemma-4 or equally or higher advanced model optimized for
+    the use case , according to whatever pc / spec the person is running. User
+    can chose to upgrade to higher model. 
+
+    The purpose is , there should be always be some sort of seamless context
+    handoff available and updated time to time as the chat progresses. Sometimes
+    user is lazy or just doesn't want to optimize the prompt and feed the
+    context. Leading to garbage in and garbage out if the "working model" treats
+    the prompt as is, and user has not "prompted" to follow best practice or to
+    grill him on questions , leading to unrealiable outputs. 
+
+    The local gemma model would hence be able to do the prompt refinement and
+    context feed correctly, so user can be rest assured he doesn't have to add
+    two steps between each prompt, leading to faster TAT and hgiher quality
+    outputs when doing spec-driven-development using modern vibe coding
+    practices. Implement other data backed practices such as folder segregation
+    , maintaining yaml etc.
+  intent: implementation
+  timestamp: 2026-06-15T14:09:00.000Z
+  followUpTurns: 10
+  toolsUsed:
+    - ReadFile
+    - Glob
+    - Shell
+    - AskQuestion
+    - Subagent
+    - CreatePlan
+  fixture: empty-node-project
+  goldenOutcome: I’ll turn this into a concrete implementation plan for the
+    wrapper project, first by checking the re...
+- id: T02
+  rawPrompt: >-
+    Local Context Wrapper Plan
+
+
+    Implement the plan as specified, it is attached for your reference. Do NOT
+    edit the plan file itself.
+
+
+    To-do's from the plan have already been created. Do not create them again.
+    Mark them as in_progress as you work, starting with the first one. Don't
+    stop until you have completed all the to-dos.
+  intent: planning
+  timestamp: 2026-06-15T14:25:00.000Z
+  followUpTurns: 44
+  toolsUsed:
+    - ReadFile
+    - TodoWrite
+    - ApplyPatch
+    - Shell
+    - ReadLints
+    - Glob
+  fixture: empty-node-project
+  goldenOutcome: I’ll implement the attached plan without modifying the plan file,
+    starting by marking the first exis...
+- id: T03
+  rawPrompt: >-
+    Implement the plan as specified, it is attached for your reference. Do NOT
+    edit the plan file itself.
+
+
+    To-do's from the plan have already been created. Do not create them again.
+    Mark them as in_progress as you work, starting with the first one. Don't
+    stop until you have completed all the to-dos.
+  intent: planning
+  timestamp: 2026-06-15T14:33:00.000Z
+  followUpTurns: 0
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: ...
+- id: T04
+  rawPrompt: Initialized empty Git repository in
+    /Users/vinising/Desktop/Projects/Wrapper/.git/
+  intent: implementation
+  timestamp: 2026-06-15T14:33:00.000Z
+  followUpTurns: 2
+  toolsUsed:
+    - Shell
+  fixture: empty-dir
+  goldenOutcome: Thanks, now that the repo exists I’ll check the working tree
+    state so I can confirm what’s ready to ...
+- id: T05
+  rawPrompt: Go with the initial install and run. How do we use this structure /
+    project in existing or new projects.
+  intent: implementation
+  timestamp: 2026-06-15T14:35:00.000Z
+  followUpTurns: 7
+  toolsUsed:
+    - Shell
+    - ReadFile
+    - AwaitShell
+  fixture: empty-dir
+  goldenOutcome: I’ll run the initial bootstrap commands in the wrapper repo now,
+    then give you a concrete “new proje...
+- id: T06
+  rawPrompt: Let's setup for this project, then use it to test the working and
+    make additional improvements?
+  intent: implementation
+  timestamp: 2026-06-15T14:38:00.000Z
+  followUpTurns: 15
+  toolsUsed:
+    - ReadFile
+    - ApplyPatch
+    - Shell
+    - ReadLints
+  fixture: empty-node-project
+  goldenOutcome: "I’ll set it up directly in this repo for real usage: wire the
+    MCP CLI to use configurable local gene..."
+- id: T07
+  rawPrompt: Go ahead, we need to test the real thing with real local model.
+  intent: implementation
+  timestamp: 2026-06-15T14:45:00.000Z
+  followUpTurns: 17
+  toolsUsed:
+    - ReadFile
+    - ApplyPatch
+    - Shell
+    - ReadLints
+  fixture: empty-node-project
+  goldenOutcome: I’ll wire an actual MLX inference bridge script, make the runtime
+    auto-detect/use it, then install M...
+- id: T08
+  rawPrompt: I guess the ssl error may be due to not accepting terms and
+    conditions, and not providing you the hugging face api ?
+  intent: debugging
+  timestamp: 2026-06-15T14:50:00.000Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: >-
+    Could be related, but the specific error you got is **TLS certificate
+    validation**, not auth:
+
+
+    - `CE...
+- id: T09
+  rawPrompt: which model am i looking for if I want to download this manually?
+    Maybe you can just do the tests and then point to that if things still fail
+    whenever a user is setting this up.
+  intent: debugging
+  timestamp: 2026-06-15T14:51:00.000Z
+  followUpTurns: 4
+  toolsUsed:
+    - Shell
+    - ApplyPatch
+  fixture: empty-node-project
+  goldenOutcome: Good call. I’ll run the full test/build checks again now, then
+    I’ll add a clear “manual model downlo...
+- id: T10
+  rawPrompt: |-
+    @/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/terminals/2.txt:84-89 
+    Give me the hf comminity link where I need to accept the tos
+  intent: implementation
+  timestamp: 2026-06-15T15:20:00.000Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: |-
+    Use these Hugging Face pages:
+
+    - Model page you’re downloading: [https://huggingface.co/mlx-communit...
+- id: T11
+  rawPrompt: "@/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-W\
+    rapper/terminals/2.txt:75-79"
+  intent: implementation
+  timestamp: 2026-06-15T15:22:00.000Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: |-
+    You’re very close — the command name is `hf`, not `hf-cli`.
+
+    Run this in your active `.venv`:
+
+    ```ba...
+- id: T12
+  rawPrompt: login didn't work.
+    @/Users/vinising/.cursor/projects/Users-vinising-Desktop-Projects-Wrapper/terminals/2.txt:264-268
+    Also we should be using gemma 4 not gemma 3. Maybe switch to ollama?
+  intent: implementation
+  timestamp: 2026-06-15T15:28:00.000Z
+  followUpTurns: 11
+  toolsUsed:
+    - Shell
+    - ReadFile
+    - WebSearch
+    - ApplyPatch
+    - ReadLints
+  fixture: empty-node-project
+  goldenOutcome: Makes sense — your Hugging Face path is blocked by SSL trust, so
+    switching to a local runtime that a...
+- id: T13
+  rawPrompt: don't stop until setup completes, you can run the necessary commands in shell
+  intent: implementation
+  timestamp: 2026-06-15T15:34:00.000Z
+  followUpTurns: 11
+  toolsUsed:
+    - Shell
+    - AwaitShell
+    - ReadLints
+  fixture: empty-node-project
+  goldenOutcome: "I’ll take this through to a working Ollama setup: install/start
+    Ollama if needed, pull the Gemma 4 m..."
+- id: T14
+  rawPrompt: >-
+    Decide on .wrapper yourself.
+
+    Where can I see the outputs? maybe create a folder , each prompt get's added
+    with timestamp in new file, keeping only the latest N number of configurable
+    prompt history, so it doesn't start increasing Cursor's context if it has to
+    do a project wide search. 
+
+    Is the readme updated with how to use this in any project, new or old? The
+    setup should be a simple command execution or chat invocation.
+  intent: implementation
+  timestamp: 2026-06-15T16:46:00.000Z
+  followUpTurns: 23
+  toolsUsed:
+    - ReadFile
+    - ApplyPatch
+    - Shell
+    - Glob
+    - ReadLints
+  fixture: empty-node-project
+  goldenOutcome: "I’ll make `.wrapper` behave like a lightweight project memory:
+    keep human-readable current context i..."
+- id: T15
+  rawPrompt: Because this project won't be modified very frequently, it would make
+    sense to have a more detailed technical reference document which goes over
+    the logic along with pseudo-code or code blocks and how things work, what
+    tweaks do what etc
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 5
+  toolsUsed:
+    - Glob
+    - ReadFile
+    - Read
+    - Write
+    - StrReplace
+  fixture: empty-node-project
+  goldenOutcome: I'll read the core modules and config paths first, then write a
+    technical reference doc that explain...
+- id: T16
+  rawPrompt: just to understand, this project itself is self wired right, then why
+    didn't my last prompt create a refined prompt? "Because this project won't
+    be modified very frequently, it would make sense to have a more detailed
+    technical reference document which goes over the logic along with
+    pseudo-code or code blocks and how things work, what tweaks do what etc"
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 1
+  toolsUsed:
+    - Glob
+  fixture: empty-node-project
+  goldenOutcome: Good question — I'll check how this repo is actually wired to
+    Cursor (MCP, rules, hooks) so we can e...
+- id: T17
+  rawPrompt: If the available MCP tools do not fully support what the user asked
+    you to do, complete the work you can with the current tool set. In your work
+    summary, include what you were unable to do with MCP and why. Do not use
+    browser automation to work around missing or unavailable MCP tools unless
+    the user explicitly asks you to use the browser.
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 0
+  toolsUsed: []
+  fixture: mini-mcp-stub
+  goldenOutcome: ...
+- id: T18
+  rawPrompt: just to understand, this project itself is self wired right, then why
+    didn't my last prompt create a refined prompt? "Because this project won't
+    be modified very frequently, it would make sense to have a more detailed
+    technical reference document which goes over the logic along with
+    pseudo-code or code blocks and how things work, what tweaks do what etc"
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 2
+  toolsUsed:
+    - Shell
+  fixture: empty-node-project
+  goldenOutcome: >-
+    [REDACTED]
+
+    Short answer: **the wrapper is built and works in this repo, but your last
+    message never ...
+- id: T19
+  rawPrompt: your approach is fine, maybe I don't want every prompt refined. I
+    should invoke it via / command or smoke etc. just ensure the required
+    configuration is implemented and update the read me and technical references
+    documen
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 19
+  toolsUsed:
+    - Glob
+    - Read
+    - Grep
+    - Write
+    - StrReplace
+    - Shell
+  fixture: empty-node-project
+  goldenOutcome: >-
+    Implementing Cursor MCP and command wiring, then updating the README and
+    technical reference.
+
+
+    [REDA...
+- id: T20
+  rawPrompt: how does the scoring happen? /refine-prompt
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 3
+  toolsUsed:
+    - Grep
+    - Read
+  fixture: empty-node-project
+  goldenOutcome: |-
+    Explaining how prompt scoring works by reading the implementation.
+
+    [REDACTED]
+    [REDACTED]
+    Scoring in...
+- id: T21
+  rawPrompt: I am not sure how accurate this scoring methodology is. Either we can
+    remove this or implement LLM based jugement (local?)
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 14
+  toolsUsed:
+    - Read
+    - Grep
+    - Write
+    - StrReplace
+    - Shell
+  fixture: empty-node-project
+  goldenOutcome: Heuristic scoring is weak for real prompt quality. Exploring the
+    implementation to replace it with l...
+- id: T22
+  rawPrompt: in the second last prompt i had done "how does the scoring happen?
+    '/refine-prompt' " without single quote) , but that still didn't work why
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: "The short answer: **`/refine-prompt` did not fail — it never
+    actually ran the refinement pipeline.**..."
+- id: T23
+  rawPrompt: how would that be any different or more useful that simply asking
+    cursor inbuilt chat agent to first refine the prompt before execution?
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: For many tasks, **it isn’t much different** — and sometimes the
+    built-in Agent is the better choice....
+- id: T24
+  rawPrompt: And what would be a strong addition to make use of local LLM to
+    reduce the token requirement and better outputs?
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: The wrapper’s current **`/refine-prompt`** step mostly improves
+    *prompt shape*. It doesn’t by itself...
+- id: T25
+  rawPrompt: So 1. Context packager (best ROI) --> will be sort of a handoff
+    command? when switching from long running chats to new chats?
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: Yes — **partly**, but not the same thing. They work best
+    **together** when you move from a long chat...
+- id: T26
+  rawPrompt: |-
+    so a better use of agent-brief is when creating sub-agents for sub-tasks?
+    is refresh-handoff our custom skill or preexisting cursor?
+  intent: implementation
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 1
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: |-
+    ## 1. Is `agent-brief` mainly for sub-agents / sub-tasks?
+
+    **Yes — that’s one of its best uses**, bu...
+- id: T27
+  rawPrompt: 2. Local retrieval / index (biggest long-term win) ===> is this
+    already built-in?
+  intent: review
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 3
+  toolsUsed:
+    - Grep
+    - Read
+    - Glob
+  fixture: repo-with-drift
+  goldenOutcome: >-
+    [REDACTED]
+
+    [REDACTED]
+
+    **No — local retrieval / indexing is not built yet.** Only the
+    **scaffolding**...
+- id: T28
+  rawPrompt: >-
+    Alright. Let's plan and build the agent-brief and semantic-index. 
+
+    Then explain what would have been an ideal prompting using our built-in
+    'refresh-' tools to acheive this goal.
+  intent: planning
+  timestamp: 2026-06-16T09:08:39.273Z
+  followUpTurns: 5
+  toolsUsed:
+    - Read
+    - Glob
+    - AskQuestion
+    - CreatePlan
+  fixture: mini-mcp-stub
+  goldenOutcome: >-
+    Reviewing the codebase to draft a plan for `agent-brief` and semantic
+    indexing.
+
+
+    [REDACTED]
+
+    [REDACTE...
+- id: T29
+  rawPrompt: >-
+    Agent Brief + Semantic Index
+
+
+    Implement the plan as specified, it is attached for your reference. Do NOT
+    edit the plan file itself.
+
+
+    To-do's from the plan have already been created. Do not create them again.
+    Mark them as in_progress as you work, starting with the first one. Don't
+    stop until you have completed all the to-dos.
+  intent: planning
+  timestamp: 2026-06-15T20:12:00.000Z
+  followUpTurns: 1
+  toolsUsed:
+    - TodoWrite
+    - Read
+  fixture: repo-with-drift
+  goldenOutcome: |-
+    **Implementing Agent Brief Plan**
+
+    My current focus is on executing the "Agent Brief + Semantic Inde...
+- id: T30
+  rawPrompt: >-
+    Implement the plan as specified, it is attached for your reference. Do NOT
+    edit the plan file itself.
+
+
+    To-do's from the plan have already been created. Do not create them again.
+    Mark them as in_progress as you work, starting with the first one. Don't
+    stop until you have completed all the to-dos.
+  intent: planning
+  timestamp: 2026-06-15T20:30:00.000Z
+  followUpTurns: 0
+  toolsUsed: []
+  fixture: empty-node-project
+  goldenOutcome: ...
+- id: T31
+  rawPrompt: I'm sure the readme and technical-reference has been updated already
+    regarding our project. could you also include some defined use cases and
+    workflows in the technical-reference as well for each of our added commands.
+  intent: implementation
+  timestamp: 2026-06-15T20:30:00.000Z
+  followUpTurns: 7
+  toolsUsed:
+    - Grep
+    - Read
+    - StrReplace
+    - Shell
+  fixture: empty-node-project
+  goldenOutcome: |-
+    **Documenting Use Cases**
+
+    I'm currently focusing on updating the technical reference documentation....

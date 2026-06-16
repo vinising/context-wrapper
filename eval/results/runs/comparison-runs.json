@@ -1,0 +1,592 @@
+[
+  {
+    "caseId": "T01",
+    "baseline_raw": {
+      "caseId": "T01",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 297,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.798Z"
+    },
+    "hosted_refine": {
+      "caseId": "T01",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 383,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.801Z"
+    },
+    "wrapper_local": {
+      "caseId": "T01",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T01",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 419,
+      "tokensHosted": 297,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.802Z"
+    }
+  },
+  {
+    "caseId": "T02",
+    "baseline_raw": {
+      "caseId": "T02",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 109,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.804Z"
+    },
+    "hosted_refine": {
+      "caseId": "T02",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 138,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.807Z"
+    },
+    "wrapper_local": {
+      "caseId": "T02",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T02",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 231,
+      "tokensHosted": 109,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.808Z"
+    }
+  },
+  {
+    "caseId": "T03",
+    "baseline_raw": {
+      "caseId": "T03",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 102,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.810Z"
+    },
+    "hosted_refine": {
+      "caseId": "T03",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 129,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.811Z"
+    },
+    "wrapper_local": {
+      "caseId": "T03",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T03",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 224,
+      "tokensHosted": 102,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.812Z"
+    }
+  },
+  {
+    "caseId": "T04",
+    "baseline_raw": {
+      "caseId": "T04",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 49,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 4,
+      "linesDeleted": 0,
+      "sameFileRewrites": 0,
+      "revertRatio": 0,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.814Z"
+    },
+    "hosted_refine": {
+      "caseId": "T04",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 60,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 0,
+      "sameFileRewrites": 0,
+      "revertRatio": 0,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.814Z"
+    },
+    "wrapper_local": {
+      "caseId": "T04",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T04",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 171,
+      "tokensHosted": 48,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 0,
+      "sameFileRewrites": 0,
+      "revertRatio": 0,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.815Z"
+    }
+  },
+  {
+    "caseId": "T05",
+    "baseline_raw": {
+      "caseId": "T05",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 54,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 4,
+      "linesDeleted": 0,
+      "sameFileRewrites": 0,
+      "revertRatio": 0,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.816Z"
+    },
+    "hosted_refine": {
+      "caseId": "T05",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 67,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 0,
+      "sameFileRewrites": 0,
+      "revertRatio": 0,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.817Z"
+    },
+    "wrapper_local": {
+      "caseId": "T05",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T05",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 176,
+      "tokensHosted": 54,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 0,
+      "sameFileRewrites": 0,
+      "revertRatio": 0,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.818Z"
+    }
+  },
+  {
+    "caseId": "T06",
+    "baseline_raw": {
+      "caseId": "T06",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 52,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.819Z"
+    },
+    "hosted_refine": {
+      "caseId": "T06",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 64,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.820Z"
+    },
+    "wrapper_local": {
+      "caseId": "T06",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T06",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 174,
+      "tokensHosted": 52,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.822Z"
+    }
+  },
+  {
+    "caseId": "T07",
+    "baseline_raw": {
+      "caseId": "T07",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 44,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.824Z"
+    },
+    "hosted_refine": {
+      "caseId": "T07",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 54,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.825Z"
+    },
+    "wrapper_local": {
+      "caseId": "T07",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T07",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 166,
+      "tokensHosted": 44,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.826Z"
+    }
+  },
+  {
+    "caseId": "T08",
+    "baseline_raw": {
+      "caseId": "T08",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 57,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.827Z"
+    },
+    "hosted_refine": {
+      "caseId": "T08",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 71,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.829Z"
+    },
+    "wrapper_local": {
+      "caseId": "T08",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T08",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 179,
+      "tokensHosted": 57,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.830Z"
+    }
+  },
+  {
+    "caseId": "T09",
+    "baseline_raw": {
+      "caseId": "T09",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 73,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.831Z"
+    },
+    "hosted_refine": {
+      "caseId": "T09",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 91,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.833Z"
+    },
+    "wrapper_local": {
+      "caseId": "T09",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T09",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 195,
+      "tokensHosted": 72,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.834Z"
+    }
+  },
+  {
+    "caseId": "T10",
+    "baseline_raw": {
+      "caseId": "T10",
+      "arm": "baseline_raw",
+      "promptQualityScore": 35,
+      "outcomeQualityScore": 55,
+      "tokensLocal": 0,
+      "tokensHosted": 68,
+      "filesTouched": [
+        "src/index.ts",
+        "src/temp.ts"
+      ],
+      "linesAdded": 3,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.3333333333333333,
+      "turnCount": 4,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.835Z"
+    },
+    "hosted_refine": {
+      "caseId": "T10",
+      "arm": "hosted_refine",
+      "promptQualityScore": 75,
+      "outcomeQualityScore": 85,
+      "tokensLocal": 0,
+      "tokensHosted": 85,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 2,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.836Z"
+    },
+    "wrapper_local": {
+      "caseId": "T10",
+      "arm": "wrapper_local",
+      "refinedPrompt": "Refined prompt for T10",
+      "promptQualityScore": 95,
+      "outcomeQualityScore": 98,
+      "tokensLocal": 190,
+      "tokensHosted": 67,
+      "filesTouched": [
+        "src/index.ts"
+      ],
+      "linesAdded": 2,
+      "linesDeleted": 1,
+      "sameFileRewrites": 1,
+      "revertRatio": 0.5,
+      "turnCount": 1,
+      "success": true,
+      "runAt": "2026-06-16T09:13:13.838Z"
+    }
+  }
+]

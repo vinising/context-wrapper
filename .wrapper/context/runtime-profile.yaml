@@ -1,0 +1,9 @@
+version: 1
+detected:
+  platform: darwin
+  arch: arm64
+  memoryGb: 24
+  cpuBrand: Apple M4 Pro
+selectedTier: standard
+modelId: mlx-community/gemma-3-4b-it-4bit
+reason: 24 GB Apple Silicon machine fits the standard local refinement tier.

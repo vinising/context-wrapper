@@ -1,0 +1,9 @@
+node_modules/
+.venv/
+models/
+dist/
+coverage/
+.wrapper/index/
+.wrapper/runs/
+.wrapper/prompts/
+*.log

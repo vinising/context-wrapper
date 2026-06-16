@@ -1,0 +1,42 @@
+{
+  "name": "local-context-wrapper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "mcp": "tsx packages/mcp-server/src/cli.ts",
+    "setup:workspace": "tsx packages/mcp-server/src/setup-workspace-cli.ts",
+    "setup:cursor": "tsx packages/mcp-server/src/setup-cursor-cli.ts",
+    "eval:extract": "tsx packages/eval-harness/src/extractor-cli.ts",
+    "eval:calibrate": "tsx packages/eval-harness/src/calibrate-cli.ts",
+    "eval:judge": "tsx packages/eval-harness/src/judge-cli.ts",
+    "eval:replay": "tsx packages/eval-harness/src/replay-cli.ts",
+    "eval:report": "tsx packages/eval-harness/src/report-cli.ts",
+    "eval:framework": "tsx packages/eval-harness/src/framework-judge-cli.ts",
+    "smoke:refine": "tsx packages/mcp-server/src/smoke.ts",
+    "smoke:index": "tsx packages/mcp-server/src/smoke-index.ts",
+    "smoke:brief": "tsx packages/mcp-server/src/smoke-brief.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "minimatch": "^10.2.5",
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
+  }
+}

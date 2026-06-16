@@ -1,0 +1,64 @@
+# Prompt Quality Evaluation Rubric
+version: 1
+
+dimensions:
+  goal_clarity:
+    description: "How clearly does the prompt define the end goal and intent of the task? (1 = extremely vague, 5 = exceptionally clear and well-defined)"
+    range: [1, 5]
+  scope_bounds:
+    description: "Are boundaries clearly established to prevent scope creep? (1 = no limits or definitions, 5 = precise files, directories, and systems bounded)"
+    range: [1, 5]
+  acceptance_criteria:
+    description: "Are there specific, measurable conditions that define completion/success? (1 = none, 5 = detailed list of observable test/acceptance criteria)"
+    range: [1, 5]
+  constraints:
+    description: "Are technical, architectural, or design constraints explicitly outlined? (1 = none mentioned, 5 = exhaustive list of dependencies, files to touch, and boundaries)"
+    range: [1, 5]
+  verification_steps:
+    description: "Does the prompt specify step-by-step instructions on how to verify/test the work? (1 = no verification instruction, 5 = complete checklist of validation scripts and scenarios)"
+    range: [1, 5]
+  context_grounding:
+    description: "Is the context/background (handoff, existing files, APIs) properly supplied or referenced? (1 = no background context, 5 = fully integrated with existing systems/APIs)"
+    range: [1, 5]
+
+scoring_guidance:
+  ranges:
+    - range: "0-39"
+      meaning: "Vague or missing goal, scope, and success criteria."
+    - range: "40-69"
+      meaning: "Workable but important gaps remain."
+    - range: "70-89"
+      meaning: "Clear enough to implement with minor assumptions."
+    - range: "90-100"
+      meaning: "Specific goal, constraints, acceptance criteria, and verification steps are all fully specified."
+
+judge_prompt_template: |
+  You are an expert AI software engineering lead acting as a judge to evaluate prompt quality for coding agents.
+  You will receive a candidate prompt and you must evaluate its readiness and quality using the specified rubrics.
+
+  Evaluate the following prompt against the current project context:
+  ---
+  Project Goal: {projectGoal}
+  Current State/Focus: {currentFocus}
+  Candidate Prompt:
+  {candidatePrompt}
+  ---
+
+  Score each dimension on a scale of 1 to 5.
+  Provide an overall final score between 0 and 100 that accurately reflects the dimensions and readiness:
+  - 0-39: Vague or missing goal, scope, and success criteria.
+  - 40-69: Workable but important gaps remain.
+  - 70-89: Clear enough to implement with minor assumptions.
+  - 90-100: Specific goal, constraints, acceptance criteria, and verification steps.
+
+  Return your evaluation ONLY in the following valid JSON format:
+  {{
+    "score": <0 to 100>,
+    "goal_clarity": <1 to 5>,
+    "scope_bounds": <1 to 5>,
+    "acceptance_criteria": <1 to 5>,
+    "constraints": <1 to 5>,
+    "verification_steps": <1 to 5>,
+    "context_grounding": <1 to 5>,
+    "reason": "<detailed explanation of your scoring and dimension ratings>"
+  }}

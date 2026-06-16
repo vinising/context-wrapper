@@ -1,0 +1,28 @@
+version: 1
+indexing:
+  enabled: true
+  include:
+    - "**/*"
+  exclude:
+    - .env
+    - .env.*
+    - node_modules/**
+    - .git/**
+    - .wrapper/index/**
+    - .wrapper/runs/**
+  embedModel: nomic-embed-text
+  maxFileBytes: 256000
+  maxFiles: 500
+  chunkCharSize: 1800
+  retrievalTopK: 8
+privacy:
+  allowPromptLogs: false
+  redactSecrets: true
+promptHistory:
+  enabled: true
+  directory: .wrapper/prompts
+  maxEntries: 20
+agentBrief:
+  enabled: true
+  directory: .wrapper/runs
+  maxEntries: 10

@@ -1,0 +1,12 @@
+{
+  "name": "@wrapper/mcp-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "wrapper-mcp": "./src/cli.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
