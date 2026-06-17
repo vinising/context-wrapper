@@ -1,21 +1,23 @@
 # Context Handoff
 
-Updated: 2026-06-16T12:18:48.555Z
+Updated: 2026-06-17T13:40:00.000Z
 
-## Workspace Epic Run
+## Headroom vs Wrapper Analysis
 
-Execute task autonomously via tiered routing framework
+Research chopratejas/headroom and compare it with Local Context Wrapper
 
 ## Active Context
 
-Completed epic: "Database schema migration with auth integration for microservice" across 3 milestones. Modified files: 
+Completed side-by-side architecture review of Headroom (downstream mid-loop compression) and Local Context Wrapper (upstream on-device curation). Completed full implementation of the approved integration improvements (Retrieve-First policy, delegate_task_to_local MCP delegation, and bidirectional active-plan.json sync) across both Agent and Plan modes.
 
-Current focus: Task completed. Standing by for next prompt
+Current focus: Delivering completed integration improvements and explaining cross-mode robustness.
 
 ## Constraints
 
+None.
 
 ## Next Steps
 
-- Review completed implementation
-- Run automated integration tests
+- User to explore running lcw-auto directly in Plan Mode
+- Validate delegate_task_to_local in everyday local usage
+- Discuss next steps on incorporating Headroom's CCR concepts into Wrapper briefs

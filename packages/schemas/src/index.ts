@@ -223,3 +223,31 @@ export const JudgeVerdictSchema = z.object({
 
 export type JudgeVerdict = z.infer<typeof JudgeVerdictSchema>;
 
+export const ActivePlanMilestoneSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  status: z.enum(["pending", "in_progress", "completed", "failed"]),
+  assignedTo: z.string().min(1),
+  result: z.object({
+    success: z.boolean(),
+    filesModified: z.array(z.string()),
+    logs: z.string().optional()
+  }).optional()
+});
+
+export type ActivePlanMilestone = z.infer<typeof ActivePlanMilestoneSchema>;
+
+export const ActivePlanSchema = z.object({
+  version: z.literal(1),
+  taskId: z.string().min(1),
+  taskDescription: z.string().min(1),
+  tier: z.enum(["tier1_local", "tier2_hybrid", "tier3_hosted"]),
+  status: z.enum(["pending", "in_progress", "completed", "failed"]),
+  milestones: z.array(ActivePlanMilestoneSchema),
+  createdAt: IsoDateSchema,
+  updatedAt: IsoDateSchema
+});
+
+export type ActivePlan = z.infer<typeof ActivePlanSchema>;
+

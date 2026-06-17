@@ -10,7 +10,9 @@ import {
   PromptQuality,
   WorkspacePolicy,
   WorkspacePolicySchema,
-  AgentBrief
+  AgentBrief,
+  ActivePlan,
+  ActivePlanSchema
 } from "@wrapper/schemas";
 
 export type InitialContext = {
@@ -70,6 +72,7 @@ export function createContextStore(workspaceRoot: string) {
   const decisionsPath = join(root, "context/decisions.yaml");
   const policyPath = join(root, "policy.yaml");
   const promptHistoryPath = join(root, "prompts");
+  const activePlanPath = join(root, "runs/active-plan.json");
 
   async function initialize(input: InitialContext): Promise<void> {
     const now = new Date().toISOString();
@@ -262,6 +265,19 @@ export function createContextStore(workspaceRoot: string) {
     await Promise.all(files.slice(0, overflow).map((file) => rm(file, { force: true })));
   }
 
+  async function readActivePlan(): Promise<ActivePlan | null> {
+    try {
+      const content = await readFile(activePlanPath, "utf8");
+      return ActivePlanSchema.parse(JSON.parse(content));
+    } catch {
+      return null;
+    }
+  }
+
+  async function writeActivePlan(plan: ActivePlan): Promise<void> {
+    await atomicWrite(activePlanPath, JSON.stringify(plan, null, 2));
+  }
+
   return {
     paths: {
       root,
@@ -269,6 +285,7 @@ export function createContextStore(workspaceRoot: string) {
       handoffMarkdownPath,
       decisionsPath,
       policyPath,
+      activePlanPath,
       indexDir: join(root, "index"),
       runsDir: join(root, "runs")
     },
@@ -282,7 +299,9 @@ export function createContextStore(workspaceRoot: string) {
     recordPromptResult,
     recordAgentBrief,
     listPromptHistory,
-    listAgentBriefHistory
+    listAgentBriefHistory,
+    readActivePlan,
+    writeActivePlan
   };
 }
 

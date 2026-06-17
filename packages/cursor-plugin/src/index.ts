@@ -18,6 +18,7 @@ export const wrapperRules = [
   "Call refine_prompt only when the user runs /lcw-refine, asks to refine, or uses smoke:refine.",
   "Call build_agent_brief only when the user runs /lcw-brief or asks to build a task brief.",
   "Call index_workspace only when the user runs /lcw-index or asks to index the workspace.",
+  "Enforce the MANDATORY Retrieve-First policy: call the retrieve_context tool before reading large files or running broad command-line searches (like find, grep, rg).",
   "Prefer a refined prompt that includes goal, constraints, acceptance criteria, relevant context, and verification steps.",
   "When context is incomplete, ask targeted clarifying questions instead of treating a vague prompt as complete.",
   "Do not claim Cursor built-in chat prompts can be transparently rewritten; use supported MCP, rules, commands, skills, and hooks surfaces."

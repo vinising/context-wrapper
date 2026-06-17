@@ -114,4 +114,89 @@ describe("wrapper MCP tools", () => {
       await rm(workspace, { recursive: true, force: true });
     }
   });
+
+  it("orchestrates step-by-step hybrid execution with localDraftPlan and localExecuteMilestone", async () => {
+    const workspace = await mkdtemp(join(tmpdir(), "wrapper-mcp-"));
+    try {
+      const store = createContextStore(workspace);
+      await store.initialize({
+        projectName: "Wrapper",
+        projectGoal: "Improve spec-driven development prompts"
+      });
+      const tools = createWrapperTools({
+        store,
+        runtime: {
+          assessAndRefine: async ({ prompt }) => ({
+            score: 80,
+            missingContext: [],
+            recommendedQuestions: [],
+            refinedPrompt: prompt,
+            scoringMethod: "llm" as const,
+            readyForImplementation: true
+          }),
+          assessOnly: async ({ prompt }) => ({
+            score: 80,
+            missingContext: [],
+            recommendedQuestions: [],
+            refinedPrompt: prompt,
+            scoringMethod: "llm" as const,
+            readyForImplementation: true
+          }),
+          buildAgentBrief: async ({ task }) => ({
+            goal: task,
+            inScope: ["src/index.ts"],
+            outOfScope: [],
+            constraints: [],
+            acceptanceCriteria: ["npm test"],
+            verificationSteps: ["Run test"],
+            firstStep: "Review code",
+            briefMarkdown: "# Brief\n...",
+            scoringMethod: "llm" as const
+          })
+        }
+      });
+
+      // 1. Run tools.localDraftPlan with mock input task: "Implement SafeEmitter", forceTier: "tier1_local"
+      const plan = await tools.localDraftPlan({
+        task: "Implement SafeEmitter",
+        forceTier: "tier1_local"
+      });
+
+      // Assert that the returned plan status is pending or in_progress initially and has pending milestones
+      expect(["pending", "in_progress"]).toContain(plan.status);
+      expect(plan.milestones.length).toBeGreaterThan(0);
+      expect(plan.milestones[0].status).toBe("pending");
+
+      // Verify that reading the active plan from the store returns the drafted plan correctly
+      const savedPlan = await store.readActivePlan();
+      expect(savedPlan).not.toBeNull();
+      expect(savedPlan?.taskId).toBe(plan.taskId);
+      expect(savedPlan?.taskDescription).toBe("Implement SafeEmitter");
+
+      // Call tools.localExecuteMilestone for the first milestone, passing correct taskId, milestoneId, and an optional context string
+      const firstMilestone = plan.milestones[0];
+      const result = await tools.localExecuteMilestone({
+        taskId: plan.taskId,
+        milestoneId: firstMilestone.id,
+        context: "Optional context string"
+      });
+
+      // Assert that the execution succeeds and returns a success status of completed for that specific milestone
+      expect(result.success).toBe(true);
+      expect(result.status).toBe("completed");
+
+      // Verify that reading the active plan shows that the milestone's status was set to completed and that the overall plan is updated accordingly
+      const updatedPlan = await store.readActivePlan();
+      expect(updatedPlan).not.toBeNull();
+      const updatedMilestone = updatedPlan?.milestones.find((m) => m.id === firstMilestone.id);
+      expect(updatedMilestone?.status).toBe("completed");
+      expect(updatedPlan?.status).toBe("in_progress");
+
+      // Verify that the context handoff was updated with the summary of the completed task
+      const handoff = await store.readHandoff();
+      expect(handoff.activeContext.summary).toContain("Successfully completed sub-task: Scaffold and Setup");
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
+  });
 });

@@ -2,7 +2,7 @@ import { stat } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { z } from "zod";
 import { ContextStore, HandoffUpdate } from "@wrapper/context-store";
-import { PromptQuality, PromptQualitySchema, AgentBrief, AgentBriefSchema } from "@wrapper/schemas";
+import { PromptQuality, PromptQualitySchema, AgentBrief, AgentBriefSchema, ActivePlan, ActivePlanSchema } from "@wrapper/schemas";
 import { indexWorkspace, retrieveContext } from "@wrapper/semantic-index";
 import { createRuntimeGenerator } from "./runtime-generator.js";
 export { createRuntimeGenerator };
@@ -292,6 +292,171 @@ export function createWrapperTools(options: { store: ContextStore; runtime: Runt
     };
   }
 
+  async function localDraftPlan(input: {
+    task: string;
+    forceTier?: "tier1_local" | "tier2_hybrid" | "tier3_hosted" | "auto";
+  }): Promise<ActivePlan> {
+    const { Orchestrator } = await import("@wrapper/agent-framework");
+    const workspaceRoot = dirname(options.store.paths.root);
+
+    // 1. Plan epic using Orchestrator
+    const orchestrator = new Orchestrator(workspaceRoot);
+    const milestones = await orchestrator.planEpic(input.task, { forcedTier: input.forceTier });
+    const tier = orchestrator.lastPlanningTokens?.tier ?? "tier2_hybrid";
+
+    // 2. Initialize ActivePlan object
+    const plan: ActivePlan = {
+      version: 1,
+      taskId: Math.random().toString(36).substring(2, 9),
+      taskDescription: input.task,
+      tier,
+      status: "in_progress",
+      milestones: milestones.map((m) => ({
+        id: m.id,
+        title: m.title,
+        description: m.description,
+        status: "pending",
+        assignedTo: m.assignedTo
+      })),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Save initial plan
+    await options.store.writeActivePlan(plan);
+    return plan;
+  }
+
+  async function localExecuteMilestone(input: {
+    taskId: string;
+    milestoneId: string;
+    context?: string;
+  }): Promise<{
+    success: boolean;
+    filesModified: string[];
+    logs: string;
+    status: "completed" | "failed";
+  }> {
+    const { SubAgentDelegate } = await import("@wrapper/agent-framework");
+    const workspaceRoot = dirname(options.store.paths.root);
+
+    // 1. Read existing plan
+    const plan = await options.store.readActivePlan();
+    if (!plan) {
+      throw new Error("No active plan found");
+    }
+    if (plan.taskId !== input.taskId) {
+      throw new Error(`Task ID mismatch: expected ${input.taskId}, got ${plan.taskId}`);
+    }
+
+    const milestone = plan.milestones.find((m) => m.id === input.milestoneId);
+    if (!milestone) {
+      throw new Error(`Milestone with ID ${input.milestoneId} not found in active plan`);
+    }
+
+    // 2. Set milestone status to in_progress
+    milestone.status = "in_progress";
+    plan.updatedAt = new Date().toISOString();
+    await options.store.writeActivePlan(plan);
+
+    // 3. Compile briefs, run task, and log results
+    const briefTask = input.context
+      ? `${milestone.title}: ${milestone.description}\nContext: ${input.context}`
+      : `${milestone.title}: ${milestone.description}`;
+
+    let success = false;
+    let filesModified: string[] = [];
+    let logs = "";
+    let status: "completed" | "failed" = "failed";
+
+    try {
+      // Compile brief
+      const brief = await buildAgentBrief({
+        task: briefTask,
+        subAgent: true
+      });
+
+      // Execute task
+      const subAgent = new SubAgentDelegate(workspaceRoot);
+      const result = await subAgent.executeTask(brief);
+
+      success = result.success;
+      filesModified = result.filesModified || [];
+      logs = result.logs || "";
+      status = success ? "completed" : "failed";
+    } catch (err: any) {
+      success = false;
+      filesModified = [];
+      logs = `Error executing local subagent: ${err?.message || String(err)}`;
+      status = "failed";
+    }
+
+    // 4. Update milestone status
+    milestone.status = status;
+    milestone.result = {
+      success,
+      filesModified,
+      logs
+    };
+
+    // 5. Update plan-level status
+    const hasFailed = plan.milestones.some((m) => m.status === "failed");
+    const allCompleted = plan.milestones.every((m) => m.status === "completed");
+
+    if (hasFailed) {
+      plan.status = "failed";
+    } else if (allCompleted) {
+      plan.status = "completed";
+    } else {
+      plan.status = "in_progress";
+    }
+
+    plan.updatedAt = new Date().toISOString();
+    await options.store.writeActivePlan(plan);
+
+    // 6. Trigger updateContextHandoff() ONLY when the final plan completes or fails
+    if (plan.status === "completed" || plan.status === "failed") {
+      const allModifiedFiles = plan.milestones
+        .flatMap((m) => m.result?.filesModified || []);
+
+      await updateContextHandoff({
+        summary: `Completed delegated local task: "${plan.taskDescription}". Tier: ${plan.tier}. Status: ${plan.status}.`,
+        currentFocus: plan.status === "completed" ? "Delegated task succeeded. Ready for verification." : "Delegated task failed. Check active-plan.json logs.",
+        constraints: [],
+        nextSteps: plan.status === "completed"
+          ? ["Review autonomously modified files: " + allModifiedFiles.join(", ")]
+          : ["Triage failures in active-plan.json logs."]
+      });
+    }
+
+    return {
+      success,
+      filesModified,
+      logs,
+      status
+    };
+  }
+
+  async function delegateTaskToLocal(input: {
+    task: string;
+    forceTier?: "tier1_local" | "tier2_hybrid" | "tier3_hosted" | "auto";
+  }): Promise<ActivePlan> {
+    const plan = await localDraftPlan(input);
+
+    for (const milestone of plan.milestones) {
+      const result = await localExecuteMilestone({
+        taskId: plan.taskId,
+        milestoneId: milestone.id
+      });
+
+      if (result.status === "failed") {
+        break;
+      }
+    }
+
+    return (await options.store.readActivePlan()) || plan;
+  }
+
   return {
     refinePrompt,
     scorePromptQuality,
@@ -301,6 +466,9 @@ export function createWrapperTools(options: { store: ContextStore; runtime: Runt
     indexWorkspace: indexWorkspaceTool,
     retrieveContext: retrieveContextTool,
     buildAgentBrief,
-    diagnoseSetup
+    diagnoseSetup,
+    localDraftPlan,
+    localExecuteMilestone,
+    delegateTaskToLocal
   };
 }
