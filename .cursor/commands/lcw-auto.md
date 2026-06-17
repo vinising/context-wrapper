@@ -2,6 +2,8 @@
 
 The user wants to execute an engineering task autonomously using the local-context-wrapper framework.
 
+**CRITICAL (Dual-Intent Queries):** If the user's query contains conceptual questions, explanations, or requests for alternatives alongside the `/lcw-auto` command, you **MUST** answer those questions first and discuss the alternatives in your response text before calling `local_draft_plan` or presenting the plan. Do not let the automation pipeline swallow the user's conversational intent.
+
 To execute this task in a clean, interactive, hybrid workflow:
 
 1. **Draft the Plan (Plan Mode):**
