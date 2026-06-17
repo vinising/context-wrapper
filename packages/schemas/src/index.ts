@@ -114,10 +114,22 @@ export const WorkspacePolicySchema = z.object({
     forcedTier: "auto",
     autoValidate: true,
     autoRollbackOnFailure: false
+  }),
+  contextManagement: z.object({
+    zeroHistoryReset: z.boolean().default(true),
+    resetStrategy: z.enum(["clear_history", "compress_context", "none"]).default("clear_history")
+  }).default({
+    zeroHistoryReset: true,
+    resetStrategy: "clear_history"
   })
 });
 
-export type WorkspacePolicy = z.infer<typeof WorkspacePolicySchema>;
+export type WorkspacePolicy = Omit<z.infer<typeof WorkspacePolicySchema>, "contextManagement"> & {
+  contextManagement?: {
+    zeroHistoryReset: boolean;
+    resetStrategy: "clear_history" | "compress_context" | "none";
+  };
+};
 
 export const IndexManifestSchema = z.object({
   version: z.literal(1),

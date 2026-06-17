@@ -14,3 +14,6 @@ To execute this task in a clean, interactive, hybrid workflow:
    *   For highly critical or complex logical changes, write the code directly inside Cursor Chat.
 4. **Confirm and Refresh Handoff:**
    Once the milestones are complete, read `.wrapper/context/handoff.md` to refresh your active state and propose next verification steps.
+
+   **CRITICAL (Zero-History Reset):** Once all milestones have completed successfully, check the workspace policy `contextManagement` parameters. If `contextManagement.zeroHistoryReset` is enabled (which is true by default), you MUST append this exact user-friendly prompt at the very end of your final response:
+   `🌟 Your context handoff is complete and successfully synchronized to disk. Would you like me to clear our chat context to keep our history lightweight and ultra-responsive?`

@@ -62,6 +62,10 @@ const defaultPolicy: WorkspacePolicy = {
     forcedTier: "auto",
     autoValidate: true,
     autoRollbackOnFailure: false
+  },
+  contextManagement: {
+    zeroHistoryReset: true,
+    resetStrategy: "clear_history"
   }
 };
 
@@ -140,6 +144,10 @@ export function createContextStore(workspaceRoot: string) {
       autonomous: {
         ...defaultPolicy.autonomous,
         ...parsed?.autonomous
+      },
+      contextManagement: {
+        ...defaultPolicy.contextManagement,
+        ...parsed?.contextManagement
       }
     });
   }

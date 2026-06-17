@@ -17,6 +17,9 @@ describe("setupWorkspace", () => {
       expect(currentYaml).toContain("project:");
       expect(runtimeYaml).toContain("selectedTier:");
       expect(policyYaml).toContain("promptHistory:");
+      expect(policyYaml).toContain("contextManagement:");
+      expect(policyYaml).toContain("zeroHistoryReset: true");
+      expect(policyYaml).toContain("resetStrategy: clear_history");
     } finally {
       await rm(workspace, { recursive: true, force: true });
     }
