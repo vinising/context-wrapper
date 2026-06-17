@@ -72,7 +72,8 @@ This project includes a committed `.cursor/` folder:
 | `.cursor/commands/lcw-handoff.md` | Slash command → `update_context_handoff` MCP tool |
 | `.cursor/commands/lcw-brief.md` | Slash command → `build_agent_brief` MCP tool |
 | `.cursor/commands/lcw-index.md` | Slash command → `index_workspace` MCP tool |
-| `.cursor/commands/lcw-auto.md` | Slash command → `autonomous` CLI runner |
+| `.cursor/commands/lcw-auto.md` | Slash command → `local_draft_plan` to start granular hybrid loop |
+| `.cursor/commands/lcw-diagnose.md` | Slash command → `diagnose_setup` MCP server diagnostics |
 
 After opening this folder in Cursor, reload the window (or restart Cursor) so MCP picks up `.cursor/mcp.json`. Ensure Ollama is running if you use the default runtime.
 

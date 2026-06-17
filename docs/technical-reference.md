@@ -362,6 +362,12 @@ File: `packages/mcp-server/src/cli.ts`
 | `get_context_handoff` | Returns `current.yaml` structure |
 | `update_context_handoff` | Updates summary, focus, constraints, nextSteps |
 | `get_runtime_profile` | Workspace root, hardware profile, active generator mode |
+| `index_workspace` | Rebuilds the codebase semantic/lexical search index |
+| `retrieve_context` | Performs semantic search and retrieves contextual chunks |
+| `build_agent_brief` | Generates a task-scoped BRIEF for agent execution guidance |
+| `diagnose_setup` | Verifies the health and readiness of services (Ollama, models, venvs) |
+| `local_draft_plan` | (New in v2) Generates a draft task plan with structured milestones (Use in Plan Mode) |
+| `local_execute_milestone` | (New in v2) Executes a single milestone with micro-spec guidance (Use in Agent Mode) |
 
 MCP transport: **stdio** (`StdioServerTransport`). Process exits when stdin closes (no client attached).
 
@@ -384,6 +390,9 @@ Refinement is **not automatic**. The local model runs only when you invoke it.
 | `.cursor/rules/local-context-wrapper.mdc` | Agent rule: do **not** auto-refine; use tools on request |
 | `.cursor/commands/lcw-refine.md` | `/lcw-refine` → call `refine_prompt` |
 | `.cursor/commands/lcw-handoff.md` | `/lcw-handoff` → call `update_context_handoff` |
+| `.cursor/commands/lcw-brief.md` | `/lcw-brief` → call `build_agent_brief` |
+| `.cursor/commands/lcw-index.md` | `/lcw-index` → call `index_workspace` |
+| `.cursor/commands/lcw-auto.md` | `/lcw-auto` → calls `local_draft_plan` to initiate granular hybrid workflow |
 
 After editing MCP config, reload the Cursor window so the sidecar connects.
 
