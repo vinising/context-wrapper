@@ -200,7 +200,7 @@ else:
 ```
 POST {OLLAMA_HOST}/api/generate
 {
-  "model": WRAPPER_OLLAMA_MODEL,   // default: gemma4:e4b
+  "model": WRAPPER_OLLAMA_MODEL,   // default: gemma4:12b-mlx
   "prompt": "System instructions: ...\n\nUser request: ...\n\nReturn only the refined prompt text.",
   "stream": false
 }
@@ -367,7 +367,12 @@ File: `packages/mcp-server/src/cli.ts`
 | `build_agent_brief` | Generates a task-scoped BRIEF for agent execution guidance |
 | `diagnose_setup` | Verifies the health and readiness of services (Ollama, models, venvs) |
 | `local_draft_plan` | (New in v2) Generates a draft task plan with structured milestones (Use in Plan Mode) |
-| `local_execute_milestone` | (New in v2) Executes a single milestone with micro-spec guidance (Use in Agent Mode) |
+| `local_execute_milestone` | (New in v2) Executes milestones through the routing contract (direct local / decomposed local / explicit hosted opt-out) |
+| `local_file_read` | (New in v2) Enforces raw-read thresholds and returns projection-first outputs with cache reuse |
+| `local_refresh_docs` | (New in v2) Refreshes docs using `smart_touched` or `full` scope from active plan context |
+| `local_git_hygiene` | (New in v2) Prepares or creates safe hygiene commits (plan-scoped or all tracked) |
+| `local_compact_conversation` | (New in v2) Summarizes and compacts active chat history to mitigate token bloat |
+| `get_code_signature_map` | (New in v2) Generates high-density, Python-indented class/function logic signature trees |
 
 MCP transport: **stdio** (`StdioServerTransport`). Process exits when stdin closes (no client attached).
 
@@ -386,13 +391,18 @@ Refinement is **not automatic**. The local model runs only when you invoke it.
 | Path | Role |
 |------|------|
 | `.cursor/mcp.json` | Registers MCP server via `bash scripts/run-mcp.sh` |
-| `scripts/run-mcp.sh` | Sets default env (`WRAPPER_RUNTIME=ollama`, `gemma4:e4b`) and starts `tsx .../cli.ts` |
+| `scripts/run-mcp.sh` | Sets default env (`WRAPPER_RUNTIME=ollama`, `gemma4:12b-mlx`) and starts `tsx .../cli.ts` |
 | `.cursor/rules/local-context-wrapper.mdc` | Agent rule: do **not** auto-refine; use tools on request |
 | `.cursor/commands/lcw-refine.md` | `/lcw-refine` → call `refine_prompt` |
 | `.cursor/commands/lcw-handoff.md` | `/lcw-handoff` → call `update_context_handoff` |
 | `.cursor/commands/lcw-brief.md` | `/lcw-brief` → call `build_agent_brief` |
 | `.cursor/commands/lcw-index.md` | `/lcw-index` → call `index_workspace` |
 | `.cursor/commands/lcw-auto.md` | `/lcw-auto` → calls `local_draft_plan` to initiate granular hybrid workflow |
+| `.cursor/commands/lcw-compact.md` | `/lcw-compact` → MCP-gated `local_compact_conversation` (verify MCP availability first) |
+| `.cursor/commands/lcw-map.md` | `/lcw-map` → call `get_code_signature_map` to map a file's code signatures |
+| `.cursor/commands/lcw-docs.md` | `/lcw-docs` → call `local_refresh_docs` for doc hygiene |
+| `.cursor/commands/lcw-git.md` | `/lcw-git` → call `local_git_hygiene` for git hygiene |
+| `.cursor/commands/lcw-fileread.md` | `/lcw-fileread` → call `local_file_read` for threshold-guarded reads and projection cache |
 
 After editing MCP config, reload the Cursor window so the sidecar connects.
 
@@ -425,7 +435,7 @@ Generated `.cursor/mcp.json` uses an **absolute** path to `scripts/run-mcp.sh` a
 "env": {
   "WRAPPER_WORKSPACE_ROOT": "/path/to/your/project",
   "WRAPPER_RUNTIME": "ollama",
-  "WRAPPER_OLLAMA_MODEL": "gemma4:e4b",
+  "WRAPPER_OLLAMA_MODEL": "gemma4:12b-mlx",
   "OLLAMA_HOST": "http://127.0.0.1:11434"
 }
 ```
@@ -443,7 +453,16 @@ Also run `npm run setup:workspace -- /path/to/your/project` so `.wrapper/` exist
 
 Outputs land in `.wrapper/prompts/{timestamp}-score-{n}.md` when `promptHistory.enabled` is true.
 
-### 10.5 Manual MCP override
+### 10.5 `/lcw-compact` safety gate (order of checks)
+
+To prevent token blowups and false-root-cause debugging:
+
+1. **MCP availability first:** verify `local-context-wrapper` is connected and `local_compact_conversation` is callable in the active Cursor session.
+2. **Fail fast if unavailable:** stop and return reconnection/setup steps (reload Cursor, re-run `setup:cursor`, validate `.cursor/mcp.json`).
+3. **Runtime checks second:** only after MCP is confirmed, diagnose Ollama/model readiness if compaction still fails.
+4. **No broad debugging loops pre-gate:** do not run repo-wide diagnostics/tests when the MCP availability gate has not passed.
+
+### 10.6 Manual MCP override
 
 For custom env without editing `run-mcp.sh`:
 
@@ -456,7 +475,7 @@ For custom env without editing `run-mcp.sh`:
       "env": {
         "WRAPPER_WORKSPACE_ROOT": "/path/to/project",
         "WRAPPER_RUNTIME": "ollama",
-        "WRAPPER_OLLAMA_MODEL": "gemma4:e4b"
+        "WRAPPER_OLLAMA_MODEL": "gemma4:12b-mlx"
       }
     }
   }
@@ -466,7 +485,7 @@ For custom env without editing `run-mcp.sh`:
 Development alternative (same as `npm run mcp`):
 
 ```bash
-WRAPPER_RUNTIME=ollama WRAPPER_OLLAMA_MODEL=gemma4:e4b npm run mcp
+WRAPPER_RUNTIME=ollama WRAPPER_OLLAMA_MODEL=gemma4:12b-mlx npm run mcp
 ```
 
 ---
@@ -495,7 +514,8 @@ The manifest explicitly **does not** claim `rewriteBuiltInChatPrompt` capability
 |----------|---------|--------|
 | `WRAPPER_WORKSPACE_ROOT` | `process.cwd()` | Which project owns `.wrapper/` |
 | `WRAPPER_RUNTIME` | unset | Set to `ollama` to enable Ollama path in auto mode |
-| `WRAPPER_OLLAMA_MODEL` | `gemma4:e4b` | Ollama model tag |
+| `WRAPPER_OLLAMA_MODEL` | `gemma4:12b-mlx` | Ollama model tag |
+| `WRAPPER_OLLAMA_NUM_CTX` | `65536` | Max context tokens passed to Ollama on every generate call; oversized loaded models are unloaded automatically |
 | `OLLAMA_HOST` | `http://127.0.0.1:11434` | Ollama API base URL |
 | `WRAPPER_MLX_COMMAND_JSON` | auto-detect `scripts/mlx_generate.py` | JSON array: `["python","/path/to/mlx_generate.py"]` |
 | `WRAPPER_MODEL_ID_OVERRIDE` | hardware tier default | Force MLX model ID or local model directory |
@@ -523,6 +543,22 @@ promptHistory:
   enabled: true
   directory: .wrapper/prompts
   maxEntries: 20
+hygiene:
+  enabled: true
+  autoDocUpdate: true
+  docScope: smart_touched
+  autoCommitOnPlanComplete: true
+  autoPush: false
+  commitMode: plan_scoped
+  promptThresholds:
+    milestones: 5
+    changedLines: 200
+contextManagement:
+  zeroHistoryReset: true
+  resetStrategy: clear_history
+  directorRawReadMaxLines: 50
+  useCheapHostedWorkerForProjections: true
+  useCheapHostedWorkerWhenOllamaUnavailable: true
 ```
 
 | Field | Tweak effect |
@@ -530,6 +566,14 @@ promptHistory:
 | `promptHistory.enabled` | `false` stops writing prompt files |
 | `promptHistory.maxEntries` | Retention cap; oldest deleted first |
 | `promptHistory.directory` | Alternate output folder (relative to project root) |
+| `hygiene.autoDocUpdate` | Auto-run docs hygiene when plan is completed |
+| `hygiene.docScope` | `smart_touched` for selective docs or `full` for full refresh |
+| `hygiene.autoCommitOnPlanComplete` | Auto-create hygiene commit after successful plan |
+| `hygiene.autoPush` | Keep `false`; pushes still require explicit approval |
+| `hygiene.promptThresholds` | Adds interim `/lcw-docs` + `/lcw-git` prompts on long runs |
+| `contextManagement.directorRawReadMaxLines` | Caps direct hosted-agent raw reads per window (default `50`) |
+| `contextManagement.useCheapHostedWorkerForProjections` | Enables cheap hosted projection worker for non-code/broad artifacts |
+| `contextManagement.useCheapHostedWorkerWhenOllamaUnavailable` | Forces cheap hosted projection fallback when Ollama is unavailable |
 | `indexing.exclude` | Future semantic index ignore list |
 | `privacy.allowPromptLogs` | Reserved for future `.wrapper/runs/` logging |
 
@@ -615,7 +659,7 @@ Run all: `npm test`
 
 | Goal | Where to change |
 |------|-----------------|
-| Use Gemma 4 via Ollama | `WRAPPER_RUNTIME=ollama`, `WRAPPER_OLLAMA_MODEL=gemma4:e4b` |
+| Use Gemma 4 via Ollama | `WRAPPER_RUNTIME=ollama`, `WRAPPER_OLLAMA_MODEL=gemma4:12b-mlx` |
 | Use smaller/faster Ollama model | `WRAPPER_OLLAMA_MODEL=gemma4:e2b` |
 | Keep fewer prompt files | `.wrapper/policy.yaml` → `promptHistory.maxEntries: 5` |
 | Disable prompt file writes | `promptHistory.enabled: false` |
@@ -815,6 +859,99 @@ Packaging task-specific context (including handoff, accepted decisions, and rele
 5. **Persistence**: The brief is saved to `.wrapper/runs/{timestamp}-brief.md` (git-ignored).
 6. **Reference with `@`**: The developer opens a new Cursor chat or launches a sub-agent, and references the generated brief using `@` (e.g., `@.wrapper/runs/2026-06-16T...-brief.md`).
 7. **Execution**: The hosted Agent reads only the brief (~500-1500 tokens), gaining precise instructions and context without bloating the prompt.
+
+---
+
+### 21.5 `/lcw-docs` (Documentation Hygiene)
+
+#### Defined Use Case
+Refreshing project docs after implementation progress by using plan-aware touched-file signals instead of manual memory.
+
+#### When to use
+- **Plan completion**: As final hygiene before sign-off.
+- **Mid-run checkpoints**: After large milestone batches where docs likely drift.
+- **Manual remediation**: When auto-doc mode is disabled in policy.
+
+#### Step-by-Step Workflow
+1. Trigger `/lcw-docs` in Cursor.
+2. Agent calls `local_refresh_docs` with either:
+   - `scope: "smart_touched"` (default), or
+   - `scope: "full"` for broad refresh.
+3. Tool resolves candidate docs from active-plan touched files and appends an automation hygiene summary.
+4. Agent reports `updatedFiles`, `skippedFiles`, and recommended follow-up actions.
+
+---
+
+### 21.6 `/lcw-git` (Git Hygiene)
+
+#### Defined Use Case
+Creating a clean checkpoint commit from active-plan work using controlled staging rules and explicit no-auto-push behavior.
+
+#### When to use
+- **Plan completion**: Stage and commit implementation + docs hygiene changes.
+- **Long-running epics**: Create safe periodic checkpoints.
+- **Manual mode**: Preview staged candidates before committing.
+
+#### Step-by-Step Workflow
+1. Trigger `/lcw-git` in Cursor.
+2. Agent calls `local_git_hygiene` with:
+   - `mode: "plan_scoped"` (default), or
+   - `mode: "all_tracked"` for broader staging.
+3. Tool computes changed files, stages the selected set, and optionally commits.
+4. Agent reports staged files, commit hash (if created), and reminds that push needs explicit user approval.
+
+---
+
+### 21.7 `/lcw-fileread` (Guarded File Reads)
+
+#### Defined Use Case
+Enforcing projection-first file access with hard raw-read thresholds, so hosted agent runs do not pull large full-file payloads unnecessarily.
+
+#### When to use
+- **Large file exploration**: before touching files that likely exceed the configured raw read threshold.
+- **Non-code context extraction**: when only section/block summaries are needed.
+- **Ollama outages**: when local projection falls back and cheap hosted worker summarization is preferred.
+
+#### Step-by-Step Workflow
+1. Trigger `/lcw-fileread` in Cursor.
+2. Agent calls `local_file_read` with `mode: "auto"` by default.
+3. Tool enforces `contextManagement.directorRawReadMaxLines` for raw windows and returns:
+   - `raw_window` output for safe small reads,
+   - `signature_map` projection for code files,
+   - `summary_blocks` projection for non-code files.
+4. If `requiresHostedWorker: true` is returned, route the summarization step to a cheap hosted worker and keep the director agent on compact outputs.
+5. Reuse cached projection output when `fromCache: true` to avoid repeated processing.
+
+---
+
+## 22. `/lcw-auto` validation + execution contract roadmap
+
+### Phase 1 (implemented): project-aware validation gates
+
+- Persist `verificationSteps` in stored `AgentBrief` objects.
+- Resolve validation commands from policy override first (`autonomous.validationCommand`), then auto-detect common project defaults.
+- Run validation command after successful local execution when `autonomous.autoValidate` is true.
+- Mark milestone execution as failed when validation exits non-zero.
+
+### Phase 1.5 (implemented): routed milestone execution contract
+
+- `local_execute_milestone` now enforces a routing step before execution:
+  - `tier1_local` routes to direct local execution.
+  - `tier2_hybrid` / `tier3_hosted` route to decomposed local micro-task execution.
+- Adds explicit hosted opt-out path (`executionMode: "hosted_opt_out"` + required `optOutReason`) so bypasses are intentional and auditable.
+- Persists per-milestone execution provenance:
+  - `route` (`direct_local`, `decomposed_local`, `hosted_opt_out`)
+  - `complexityTier`
+  - `plannerModel`
+  - `executionSource` (`local_subagent`, `hosted_manual`)
+  - optional `microTaskCount`, `decompositionDepth`, `optOutReason`
+
+Deferred follow-up scope (Phase 2+):
+
+- Changed-file-aware targeted test routing per micro-task.
+- Coverage delta/threshold enforcement for touched code paths.
+- Optional automatic rollback behavior when validation fails (`autoRollbackOnFailure` execution support).
+- Rich execution and validation artifacts under `.wrapper/runs/` for auditability.
 
 ---
 

@@ -73,7 +73,7 @@ If Hugging Face download/auth/TLS is blocked, run with Ollama first:
 ```bash
 brew install ollama
 ollama serve
-ollama pull gemma4:e4b
+ollama pull gemma4:12b-mlx
 ollama pull nomic-embed-text
 ```
 
@@ -81,7 +81,7 @@ Then run this project in Ollama mode:
 
 ```bash
 WRAPPER_RUNTIME=ollama \
-WRAPPER_OLLAMA_MODEL=gemma4:e4b \
+WRAPPER_OLLAMA_MODEL=gemma4:12b-mlx \
 npm run smoke:refine -- "Implement context-aware prompt refinement for this repo"
 ```
 
@@ -150,11 +150,23 @@ npm run setup:cursor -- /path/to/your/project
 
 Invoke refinement when you want it:
 
-- `/refine-prompt` in Cursor (calls `refine_prompt` MCP tool)
-- `/refresh-handoff` to update `.wrapper/context/`
+- `/lcw-refine` in Cursor (calls `refine_prompt` MCP tool)
+- `/lcw-handoff` to update `.wrapper/context/`
+- `/lcw-docs` to run documentation hygiene (`local_refresh_docs`)
+- `/lcw-git` to run git hygiene (`local_git_hygiene`)
 - `npm run smoke:refine -- "..."` from the terminal
 
 Reload Cursor after changing `.cursor/mcp.json`. See [README.md](../README.md) and [technical-reference.md](./technical-reference.md) for full configuration.
+
+### Plan completion hygiene
+
+By default, LCW can auto-run hygiene on plan completion:
+
+- Doc updates are generated via smart touched-file scope.
+- A plan-scoped commit can be created automatically.
+- `git push` always remains manual and requires explicit user approval.
+
+Tune this in `.wrapper/policy.yaml` under `hygiene`.
 
 ## 6. Local Smoke Test
 

@@ -74,8 +74,19 @@ This project includes a committed `.cursor/` folder:
 | `.cursor/commands/lcw-index.md` | Slash command → `index_workspace` MCP tool |
 | `.cursor/commands/lcw-auto.md` | Slash command → `local_draft_plan` to start granular hybrid loop |
 | `.cursor/commands/lcw-diagnose.md` | Slash command → `diagnose_setup` MCP server diagnostics |
+| `.cursor/commands/lcw-compact.md` | Slash command → MCP-gated `local_compact_conversation` (verify server availability first) |
+| `.cursor/commands/lcw-map.md` | Slash command → `get_code_signature_map` to map file code signatures |
+| `.cursor/commands/lcw-docs.md` | Slash command → `local_refresh_docs` for docs hygiene updates |
+| `.cursor/commands/lcw-git.md` | Slash command → `local_git_hygiene` for safe stage/commit hygiene |
+| `.cursor/commands/lcw-fileread.md` | Slash command → `local_file_read` for threshold-guarded reads + projection cache |
 
-After opening this folder in Cursor, reload the window (or restart Cursor) so MCP picks up `.cursor/mcp.json`. Ensure Ollama is running if you use the default runtime.
+After opening this folder in Cursor, reload the window (or restart Cursor) so MCP picks up `.cursor/mcp.json`.
+
+For `/lcw-compact`, check in this order:
+1. MCP server connectivity (`local-context-wrapper` is enabled and tools are available)
+2. Then runtime readiness (Ollama + required models) if needed
+
+Do not run long debugging loops for compaction before confirming MCP connectivity.
 
 ### Cursor integration (another project)
 
@@ -97,12 +108,12 @@ Choose one of these — none run automatically on every chat message.
 
 ### 1. Slash command in Cursor
 
-Type `/lcw-refine` and include your rough request. The Agent should call the `refine_prompt` MCP tool and return the refined text plus `historyPath`.
+Type `/lcw-refine` and include your rough request. The Agent should call the `refine_prompt` MCP tool and return the refined text, `targetFiles` anchors, and `historyPath`.
 
 ### 2. CLI smoke test (no Cursor)
 
 ```bash
-WRAPPER_RUNTIME=ollama WRAPPER_OLLAMA_MODEL=gemma4:e4b \
+WRAPPER_RUNTIME=ollama WRAPPER_OLLAMA_MODEL=gemma4:12b-mlx \
 npm run smoke:refine -- "Implement context handoff updates for planning tasks"
 ```
 
@@ -137,6 +148,19 @@ This reads your project handoff, accepted decisions, retrieves the top-k relevan
 #### 3. Use the brief
 In a new chat or when creating a sub-agent, use `@` to reference the generated brief file (e.g. `@.wrapper/runs/2026-06-16T...-brief.md`). This gives the agent precise context, constraints, and acceptance criteria without bloating its context with full-file reads or unnecessary searches.
 
+### Automation hygiene (`/lcw-docs`, `/lcw-git`)
+
+When a plan finishes, LCW can run a hygiene pass based on `.wrapper/policy.yaml`:
+
+- **Docs hygiene:** `local_refresh_docs` updates docs using `smart_touched` or `full` scope.
+- **Git hygiene:** `local_git_hygiene` stages plan-scoped files and can create a commit.
+- **Push policy:** pushes are never automatic; explicit user approval is still required.
+
+You can also run these commands manually:
+
+- `/lcw-docs` to preview/apply documentation refreshes.
+- `/lcw-git` to preview/apply plan-scoped or all-tracked git hygiene.
+
 ## Workspace setup
 
 For any new or existing project, run setup from this repo and pass the target project path:
@@ -157,12 +181,12 @@ Generated prompt outputs are written to `.wrapper/prompts/` and ignored by git. 
 
 ## Local model runtime
 
-Recommended production path: **Ollama + Gemma 4** (`gemma4:e4b`). The MCP launcher (`scripts/run-mcp.sh`) defaults to this when env vars are unset.
+Recommended production path: **Ollama + Gemma 4** (`gemma4:12b-mlx`). The MCP launcher (`scripts/run-mcp.sh`) defaults to this when env vars are unset.
 
 ```bash
 brew install ollama
 ollama serve
-ollama pull gemma4:e4b
+ollama pull gemma4:12b-mlx
 ```
 
 Manual MCP (without Cursor):
