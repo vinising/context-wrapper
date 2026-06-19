@@ -16,15 +16,27 @@ Only call wrapper MCP tools when the user explicitly asks or uses a slash comman
 - `/lcw-brief` or "build a brief for task X" -> call `build_agent_brief`
 - `/lcw-index` or "index the workspace" -> call `index_workspace`
 - `/lcw-auto` or "run this task autonomously" -> call `local_draft_plan` to draft milestones, present them in chat, ask for approval, then call `local_execute_milestone` with precise micro-specs.
+- `/lcw-compact` or "compact conversation" -> first verify `local-context-wrapper` MCP availability in-session; only then call `local_compact_conversation` to summarize active chat history and generate a clean-slate prompt. If MCP is unavailable, fail fast with reconnection/setup guidance and do not run broad debugging loops.
+- `/lcw-map` or "get signature map of X" -> call `get_code_signature_map` to generate a high-density Python-indented tree of file signatures and brief purposes.
+- `/lcw-docs` or "refresh docs hygiene" -> call `local_refresh_docs` (smart_touched by default; full only on explicit request).
+- `/lcw-git` or "run git hygiene checkpoint" -> call `local_git_hygiene` (plan_scoped by default; never push without explicit approval).
+- `/lcw-fileread` or "guarded file read" -> call `local_file_read` for threshold-limited reads, signature maps, summary blocks, and cache-backed projections.
 
 For normal chat and implementation tasks, proceed without calling these tools unless requested.
 
 ## Agent Briefs & Retrieval
 
 1. **RETRIEVE-FIRST POLICY (MANDATORY):** Before reading large source files or running broad command-line searches (`find`, `grep`, `rg`), you **MUST** call the `retrieve_context` tool with your search queries. This pulls highly focused semantic chunks and prevents context bloating.
-2. When starting a new major task or creating a sub-agent, run `/lcw-brief` with the task description.
-3. This reads the handoff, retrieves relevant code snippets, and uses the local model to build a compact, task-scoped brief under `.wrapper/runs/`.
-4. Reference the brief file using `@` in a new chat or sub-agent to save tokens and keep the agent focused.
+2. **CONCRETE RETRIEVAL THRESHOLDS (MANDATORY):** Trigger `retrieve_context` before exploration when any of the following is true:
+   - The implementation target is unknown and may span more than 2 files.
+   - The likely target file is larger than the configured policy threshold (`contextManagement.directorRawReadMaxLines`, default 50 lines).
+   - The user request is conceptual/architectural and exact file paths are not provided.
+3. **RETRIEVAL BUDGETING:** Start with `topK` in the 5-8 range. Increase only when coverage is insufficient. Do not rerun the exact same retrieval query unless scope/objective changed.
+4. **RETRIEVE-FIRST + MAP COMBO:** For files larger than the configured policy threshold (`contextManagement.directorRawReadMaxLines`, default 50 lines), call `get_code_signature_map` (or `local_file_read` in projection mode) before raw file reads. Then read only targeted line windows for specific symbols/sections rather than scanning the full file.
+5. **CORRECTION LOOP REUSE:** If the user asks for plan corrections or reordering within the same scope, reuse prior retrieval hits, signatures, and cached snippets. Do not restart broad discovery for unchanged files.
+6. When starting a new major task or creating a sub-agent, run `/lcw-brief` with the task description.
+7. This reads the handoff, retrieves relevant code snippets, and uses the local model to build a compact, task-scoped brief under `.wrapper/runs/`.
+8. Reference the brief file using `@` in a new chat or sub-agent to save tokens and keep the agent focused.
 
 ## Semantic Indexing
 
