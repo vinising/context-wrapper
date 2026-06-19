@@ -1,23 +1,20 @@
 # Context Handoff
 
-Updated: 2026-06-17T13:40:00.000Z
+Updated: 2026-06-19T13:39:30.679Z
 
-## Headroom vs Wrapper Analysis
+## local-context-wrapper
 
-Research chopratejas/headroom and compare it with Local Context Wrapper
+Local Context Wrapper is a Cursor-native sidecar for MacBooks. It uses a local model path, starting with MLX on Apple Silicon, to refine rough prompts, maintain a rolling context handoff, and support spec-driven development without replacing Cursor's hosted working model.
 
 ## Active Context
 
-Completed side-by-side architecture review of Headroom (downstream mid-loop compression) and Local Context Wrapper (upstream on-device curation). Completed full implementation of the approved integration improvements (Retrieve-First policy, delegate_task_to_local MCP delegation, and bidirectional active-plan.json sync) across both Agent and Plan modes.
+Completed delegated local task: "Create and execute an efficient phase-wise commit strategy for current workspace changes to produce a clean v2 checkpoint. Keep analysis cheap and phase commits logically without auto-push.". Tier: tier3_hosted. Status: failed.
 
-Current focus: Delivering completed integration improvements and explaining cross-mode robustness.
+Current focus: Delegated task failed. Check active-plan.json logs.
 
 ## Constraints
 
-None.
 
 ## Next Steps
 
-- User to explore running lcw-auto directly in Plan Mode
-- Validate delegate_task_to_local in everyday local usage
-- Discuss next steps on incorporating Headroom's CCR concepts into Wrapper briefs
+- Triage failures in active-plan.json logs.
