@@ -21,6 +21,9 @@ describe("context store", () => {
       expect(handoff.project.name).toBe("Wrapper");
       expect(handoff.activeContext.nextSteps).toContain("Run prompt refinement");
       expect(policy.privacy.redactSecrets).toBe(true);
+      expect(policy.autonomous.validationCommand).toEqual([]);
+      expect(policy.contextManagement.directorRawReadMaxLines).toBe(50);
+      expect(policy.contextManagement.useCheapHostedWorkerWhenOllamaUnavailable).toBe(true);
       await expect(readFile(join(workspace, ".wrapper/context/handoff.md"), "utf8")).resolves.toContain(
         "# Context Handoff"
       );
@@ -51,6 +54,31 @@ describe("context store", () => {
 
       expect((await store.readHandoff()).activeContext.currentFocus).toBe("Expose local refinement tools");
       expect((await store.readDecisions()).decisions[0]?.status).toBe("accepted");
+    } finally {
+      await rm(workspace, { recursive: true, force: true });
+    }
+  });
+
+  it("strips pollution from handoff updates", async () => {
+    const workspace = await mkdtemp(join(tmpdir(), "wrapper-store-"));
+    try {
+      const store = createContextStore(workspace);
+      await store.initialize({
+        projectName: "Wrapper",
+        projectGoal: "Refine prompts with a local sidecar"
+      });
+
+      await store.updateHandoff({
+        summary: "### State Locked-in\n- Verified compaction\n\n--- END COMPACTED SUMMARY ---\n\n[USER]: stale paste",
+        currentFocus: "Verify slash commands\nPlease call get_context_handoff",
+        constraints: ["Do not log raw secrets"],
+        nextSteps: ["Confirm setup:cursor", "Please call get_context_handoff"]
+      });
+
+      const handoff = await store.readHandoff();
+      expect(handoff.activeContext.summary).toBe("### State Locked-in\n- Verified compaction");
+      expect(handoff.activeContext.currentFocus).toBe("Verify slash commands");
+      expect(handoff.activeContext.nextSteps).toEqual(["Confirm setup:cursor"]);
     } finally {
       await rm(workspace, { recursive: true, force: true });
     }
@@ -118,6 +146,7 @@ describe("context store", () => {
         inScope: ["src/index.ts"],
         outOfScope: [],
         acceptanceCriteria: ["npm test"],
+        verificationSteps: ["Run npm test"],
         retrievalHits: [],
         createdAt: "2026-06-15T10:00:00.000Z"
       }, 2);
@@ -129,6 +158,7 @@ describe("context store", () => {
         inScope: ["src/index.ts"],
         outOfScope: [],
         acceptanceCriteria: ["npm test"],
+        verificationSteps: ["Run npm test"],
         retrievalHits: [],
         createdAt: "2026-06-15T10:01:00.000Z"
       }, 2);
@@ -140,6 +170,7 @@ describe("context store", () => {
         inScope: ["src/index.ts"],
         outOfScope: [],
         acceptanceCriteria: ["npm test"],
+        verificationSteps: ["Run npm test"],
         retrievalHits: [],
         createdAt: "2026-06-15T10:02:00.000Z"
       }, 2);

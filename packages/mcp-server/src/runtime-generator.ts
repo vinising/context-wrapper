@@ -2,6 +2,10 @@ import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { recommendModelProfile } from "@wrapper/model-router";
+import {
+  enforceOllamaContextWindow,
+  parseOllamaNumCtx
+} from "./ollama-context.js";
 import { createMlxRunner, GenerateFunction, GenerateRequest } from "@wrapper/mlx-runner";
 import {
   assessPromptHeuristically,
@@ -25,6 +29,24 @@ export type RuntimeGeneratorOptions = {
   mode?: "auto" | "fallback" | "bridge" | "ollama";
 };
 
+class SingleFlightMutex {
+  private locked = false;
+
+  public acquire(): boolean {
+    if (this.locked) {
+      return false;
+    }
+    this.locked = true;
+    return true;
+  }
+
+  public release(): void {
+    this.locked = false;
+  }
+}
+
+const ollamaMutex = new SingleFlightMutex();
+
 type GenerateBridgePayload = {
   modelId: string;
   system: string;
@@ -37,8 +59,9 @@ export function createRuntimeGenerator(options: RuntimeGeneratorOptions = {}) {
   const profile = { ...recommendedProfile, modelId };
   const mode = options.mode ?? "auto";
   const bridgeCommand = process.env.WRAPPER_MLX_COMMAND_JSON ?? autoBridgeCommand();
-  const ollamaModel = process.env.WRAPPER_OLLAMA_MODEL ?? "gemma4:e4b";
+  const ollamaModel = process.env.WRAPPER_OLLAMA_MODEL ?? "gemma4:12b-mlx";
   const ollamaHost = process.env.OLLAMA_HOST ?? "http://127.0.0.1:11434";
+  const ollamaNumCtx = parseOllamaNumCtx(process.env.WRAPPER_OLLAMA_NUM_CTX);
   const fallback = createFallbackGenerator(profile.modelId);
   const shouldUseOllama = mode === "ollama" || (mode === "auto" && process.env.WRAPPER_RUNTIME === "ollama");
 
@@ -53,19 +76,64 @@ export function createRuntimeGenerator(options: RuntimeGeneratorOptions = {}) {
     };
   };
 
+  async function verifyOllamaRuntime(): Promise<{ running: boolean; hasModel: boolean; error?: string }> {
+    try {
+      const response = await fetch(`${ollamaHost.replace(/\/$/, "")}/api/tags`);
+      if (!response.ok) {
+        return { running: false, hasModel: false, error: `HTTP ${response.status}` };
+      }
+      const data = (await response.json()) as { models?: Array<{ name: string }> };
+      const models = data.models || [];
+      const hasModel = models.some(
+        (m) => m.name === ollamaModel || m.name.startsWith(ollamaModel + ":")
+      );
+      return { running: true, hasModel };
+    } catch (err: any) {
+      return { running: false, hasModel: false, error: err?.message || String(err) };
+    }
+  }
+
   const generate: GenerateFunction = async (request) => {
     if (shouldUseOllama) {
+      if (!ollamaMutex.acquire()) {
+        return [
+          "[OLLAMA_BUSY_FALLBACK] Ollama is currently busy executing another task. Please perform this operation (e.g. compaction or mapping) using your hosted agent (Claude) directly in the chat."
+        ].join("\n");
+      }
+
       try {
         return await generateWithOllama({
           host: ollamaHost,
           model: ollamaModel,
           request,
+          numCtx: ollamaNumCtx,
           onTokens: updateTokens
         });
       } catch (error) {
+        const diagnostics = await verifyOllamaRuntime();
+        let diagnosticMsg = "";
+        if (!diagnostics.running) {
+          diagnosticMsg = [
+            `⚠️ OLLAMA OFFLINE WARNING: Local Context Wrapper is configured to use Ollama, but the service appears to be offline at ${ollamaHost}.`,
+            "To resolve this, please open your terminal and run:",
+            "  ollama serve",
+            "Or launch the Ollama desktop application on your MacBook."
+          ].join("\n");
+        } else if (!diagnostics.hasModel) {
+          diagnosticMsg = [
+            `⚠️ MISSING MODEL WARNING: Ollama is running, but the configured local model "${ollamaModel}" was not found.`,
+            "To download and install it, please run this command in your terminal:",
+            `  ollama pull ${ollamaModel}`
+          ].join("\n");
+        } else {
+          diagnosticMsg = `Ollama error: ${stringifyError(error)}`;
+        }
+
         const fallbackOutput = await fallback(request);
         updateEstimatedTokens(request.system, request.prompt, fallbackOutput);
-        return [fallbackOutput, "", `Ollama error: ${stringifyError(error)}`].join("\n");
+        return [fallbackOutput, "", diagnosticMsg].join("\n");
+      } finally {
+        ollamaMutex.release();
       }
     }
 
@@ -96,13 +164,22 @@ export function createRuntimeGenerator(options: RuntimeGeneratorOptions = {}) {
 
   async function generateStructuredLlm(request: GenerateRequest): Promise<string> {
     if (shouldUseOllama) {
-      return generateWithOllama({
-        host: ollamaHost,
-        model: ollamaModel,
-        request,
-        json: true,
-        onTokens: updateTokens
-      });
+      if (!ollamaMutex.acquire()) {
+        throw new Error("[OLLAMA_BUSY_FALLBACK] Ollama is currently busy executing another task.");
+      }
+
+      try {
+        return await generateWithOllama({
+          host: ollamaHost,
+          model: ollamaModel,
+          request,
+          json: true,
+          numCtx: ollamaNumCtx,
+          onTokens: updateTokens
+        });
+      } finally {
+        ollamaMutex.release();
+      }
     }
 
     if (mode === "bridge" && bridgeCommand) {
@@ -322,8 +399,15 @@ async function generateWithOllama(options: {
   model: string;
   request: GenerateRequest;
   json?: boolean;
+  numCtx: number;
   onTokens?: (promptTokens: number, completionTokens: number) => void;
 }): Promise<string> {
+  await enforceOllamaContextWindow({
+    host: options.host,
+    model: options.model,
+    numCtx: options.numCtx
+  });
+
   const response = await fetch(`${options.host.replace(/\/$/, "")}/api/generate`, {
     method: "POST",
     headers: {
@@ -336,9 +420,16 @@ async function generateWithOllama(options: {
         "",
         `User request: ${options.request.prompt}`,
         "",
-        options.json ? "Return only valid JSON." : "Return only the refined prompt text."
+        options.json
+          ? "Return only valid JSON."
+          : (options.request.system.toLowerCase().includes("prompt engineer") || options.request.system.toLowerCase().includes("refine"))
+            ? "Return only the refined prompt text."
+            : "Respond strictly as requested by the system instructions and user prompt format."
       ].join("\n"),
       stream: false,
+      options: {
+        num_ctx: options.numCtx
+      },
       ...(options.json ? { format: "json" } : {})
     })
   });

@@ -25,6 +25,7 @@ function checkOllamaRunning(): boolean {
 async function main() {
   const targetRoot = path.resolve(process.argv[2] ?? process.cwd());
   const profile = recommendModelProfile();
+  const requiredOllamaModel = process.env.WRAPPER_OLLAMA_MODEL ?? "gemma4:12b-mlx";
 
   console.log(`\n======================================================`);
   console.log(`🔍 LOCAL CONTEXT WRAPPER: Diagnostic Report`);
@@ -75,13 +76,15 @@ async function main() {
       const data = JSON.parse(res.stdout) as { models?: Array<{ name: string }> };
       const models = (data.models || []).map((m) => m.name);
 
-      const gemmaInstalled = models.some((name) => name.startsWith("gemma4:e4b") || name.startsWith("gemma-3") || name.startsWith("gemma4") || name.startsWith("gemma2") || name.startsWith("gemma:"));
-      if (gemmaInstalled) {
-        console.log(`🤖 [PASS] Ollama Model: Found gemma model installed: ${models.find((m) => m.includes("gemma")) || "gemma4:e4b"}`);
+      const modelInstalled = models.some(
+        (name) => name === requiredOllamaModel || name.startsWith(`${requiredOllamaModel}:`)
+      );
+      if (modelInstalled) {
+        console.log(`🤖 [PASS] Ollama Model: Found required model installed: ${models.find((m) => m === requiredOllamaModel || m.startsWith(`${requiredOllamaModel}:`)) || requiredOllamaModel}`);
       } else {
-        console.log("🤖 [FAIL] Ollama Model: Required gemma4:e4b model is missing!");
+        console.log(`🤖 [FAIL] Ollama Model: Required model ${requiredOllamaModel} is missing!`);
         allPassed = false;
-        recommendations.push("Pull the gemma model by running `ollama pull gemma4:e4b`.");
+        recommendations.push(`Pull the required model by running \`ollama pull ${requiredOllamaModel}\`.`);
       }
 
       const embedInstalled = models.some((name) => name.startsWith("nomic-embed-text"));

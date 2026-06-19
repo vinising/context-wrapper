@@ -39,6 +39,15 @@ export const DecisionLogSchema = z.object({
 export type Decision = z.infer<typeof DecisionSchema>;
 export type DecisionLog = z.infer<typeof DecisionLogSchema>;
 
+export const PromptTargetFileSchema = z.object({
+  path: z.string().min(1),
+  startLine: z.number().int().positive(),
+  endLine: z.number().int().positive(),
+  reason: z.string().min(1)
+});
+
+export type PromptTargetFile = z.infer<typeof PromptTargetFileSchema>;
+
 export const PromptQualitySchema = z.object({
   version: z.literal(1),
   prompt: z.string().min(1),
@@ -46,6 +55,7 @@ export const PromptQualitySchema = z.object({
   missingContext: z.array(z.string().min(1)),
   recommendedQuestions: z.array(z.string().min(1)),
   refinedPrompt: z.string().min(1),
+  targetFiles: z.array(PromptTargetFileSchema).optional(),
   scoringMethod: z.enum(["llm", "heuristic"]).optional(),
   readyForImplementation: z.boolean().optional(),
   createdAt: IsoDateSchema,
@@ -105,22 +115,58 @@ export const WorkspacePolicySchema = z.object({
     maxTaskTurns: z.number().int().positive().default(5),
     maxFilesModified: z.number().int().positive().default(10),
     forcedTier: z.enum(["tier1_local", "tier2_hybrid", "tier3_hosted", "auto"]).default("auto"),
+    validationCommand: z.array(z.string().min(1)).default([]),
     autoValidate: z.boolean().default(true),
-    autoRollbackOnFailure: z.boolean().default(false)
+    autoRollbackOnFailure: z.boolean().default(false),
+    briefMode: z.enum(["heuristic", "llm"]).default("heuristic")
   }).default({
     interactiveApproval: true,
     maxTaskTurns: 5,
     maxFilesModified: 10,
     forcedTier: "auto",
+    validationCommand: [],
     autoValidate: true,
-    autoRollbackOnFailure: false
+    autoRollbackOnFailure: false,
+    briefMode: "heuristic"
+  }),
+  hygiene: z.object({
+    enabled: z.boolean().default(true),
+    autoDocUpdate: z.boolean().default(true),
+    docScope: z.enum(["smart_touched", "full"]).default("smart_touched"),
+    autoCommitOnPlanComplete: z.boolean().default(true),
+    autoPush: z.boolean().default(false),
+    commitMode: z.enum(["plan_scoped", "all_tracked"]).default("plan_scoped"),
+    promptThresholds: z.object({
+      milestones: z.number().int().positive().default(5),
+      changedLines: z.number().int().positive().default(200)
+    }).default({
+      milestones: 5,
+      changedLines: 200
+    })
+  }).default({
+    enabled: true,
+    autoDocUpdate: true,
+    docScope: "smart_touched",
+    autoCommitOnPlanComplete: true,
+    autoPush: false,
+    commitMode: "plan_scoped",
+    promptThresholds: {
+      milestones: 5,
+      changedLines: 200
+    }
   }),
   contextManagement: z.object({
     zeroHistoryReset: z.boolean().default(true),
-    resetStrategy: z.enum(["clear_history", "compress_context", "none"]).default("clear_history")
+    resetStrategy: z.enum(["clear_history", "compress_context", "none"]).default("clear_history"),
+    directorRawReadMaxLines: z.number().int().positive().default(50),
+    useCheapHostedWorkerForProjections: z.boolean().default(true),
+    useCheapHostedWorkerWhenOllamaUnavailable: z.boolean().default(true)
   }).default({
     zeroHistoryReset: true,
-    resetStrategy: "clear_history"
+    resetStrategy: "clear_history",
+    directorRawReadMaxLines: 50,
+    useCheapHostedWorkerForProjections: true,
+    useCheapHostedWorkerWhenOllamaUnavailable: true
   })
 });
 
@@ -128,6 +174,9 @@ export type WorkspacePolicy = Omit<z.infer<typeof WorkspacePolicySchema>, "conte
   contextManagement?: {
     zeroHistoryReset: boolean;
     resetStrategy: "clear_history" | "compress_context" | "none";
+    directorRawReadMaxLines: number;
+    useCheapHostedWorkerForProjections: boolean;
+    useCheapHostedWorkerWhenOllamaUnavailable: boolean;
   };
 };
 
@@ -179,6 +228,7 @@ export const AgentBriefSchema = z.object({
   inScope: z.array(z.string().min(1)),
   outOfScope: z.array(z.string()),
   acceptanceCriteria: z.array(z.string().min(1)),
+  verificationSteps: z.array(z.string().min(1)),
   retrievalHits: z.array(RetrievalHitSchema),
   createdAt: IsoDateSchema,
   briefPath: z.string().min(1).optional()
@@ -235,6 +285,31 @@ export const JudgeVerdictSchema = z.object({
 
 export type JudgeVerdict = z.infer<typeof JudgeVerdictSchema>;
 
+export const ValidationRunSchema = z.object({
+  attempted: z.boolean(),
+  success: z.boolean(),
+  source: z.enum(["policy", "detected", "none"]),
+  command: z.array(z.string().min(1)).optional(),
+  exitCode: z.number().int().optional(),
+  durationMs: z.number().int().nonnegative().optional(),
+  output: z.string().optional(),
+  skippedReason: z.string().optional()
+});
+
+export type ValidationRun = z.infer<typeof ValidationRunSchema>;
+
+export const MilestoneExecutionSchema = z.object({
+  route: z.enum(["direct_local", "decomposed_local", "hosted_opt_out"]),
+  complexityTier: z.enum(["tier1_local", "tier2_hybrid", "tier3_hosted"]),
+  plannerModel: z.string().min(1),
+  executionSource: z.enum(["local_subagent", "hosted_manual"]),
+  microTaskCount: z.number().int().positive().optional(),
+  decompositionDepth: z.number().int().nonnegative().optional(),
+  optOutReason: z.string().min(1).optional()
+});
+
+export type MilestoneExecution = z.infer<typeof MilestoneExecutionSchema>;
+
 export const ActivePlanMilestoneSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
@@ -244,7 +319,9 @@ export const ActivePlanMilestoneSchema = z.object({
   result: z.object({
     success: z.boolean(),
     filesModified: z.array(z.string()),
-    logs: z.string().optional()
+    logs: z.string().optional(),
+    validation: ValidationRunSchema.optional(),
+    execution: MilestoneExecutionSchema.optional()
   }).optional()
 });
 
@@ -262,4 +339,25 @@ export const ActivePlanSchema = z.object({
 });
 
 export type ActivePlan = z.infer<typeof ActivePlanSchema>;
+
+export const CompactHistoryMessageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().min(1)
+});
+
+export type CompactHistoryMessage = z.infer<typeof CompactHistoryMessageSchema>;
+
+export const LocalCompactConversationInputSchema = z.object({
+  history: z.array(CompactHistoryMessageSchema),
+  focus: z.string().optional()
+});
+
+export type LocalCompactConversationInput = z.infer<typeof LocalCompactConversationInputSchema>;
+
+export const CodeSignatureMapInputSchema = z.object({
+  filePath: z.string().min(1)
+});
+
+export type CodeSignatureMapInput = z.infer<typeof CodeSignatureMapInputSchema>;
+
 

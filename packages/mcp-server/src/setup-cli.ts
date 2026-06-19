@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execSync, spawn, spawnSync } from "node:child_process";
-import { cp, mkdir, stat, writeFile } from "node:fs/promises";
+import { cp, mkdir, stat, writeFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setupWorkspace } from "./setup-workspace.js";
@@ -31,6 +31,40 @@ async function copyAsset(relativePath: string, targetRoot: string): Promise<void
   const destination = path.join(targetRoot, ".cursor", relativePath);
   await mkdir(path.dirname(destination), { recursive: true });
   await cp(source, destination);
+}
+
+async function copyAllAssets(targetRoot: string): Promise<string[]> {
+  const copied: string[] = [];
+
+  // Dynamically copy all rules (.mdc)
+  const rulesSrc = path.join(assetsRoot, "rules");
+  try {
+    const files = await readdir(rulesSrc);
+    for (const file of files) {
+      if (file.endsWith(".mdc")) {
+        await copyAsset(path.join("rules", file), targetRoot);
+        copied.push(`rules/${file}`);
+      }
+    }
+  } catch (err) {
+    // Ignore if directory missing
+  }
+
+  // Dynamically copy all commands (.md)
+  const commandsSrc = path.join(assetsRoot, "commands");
+  try {
+    const files = await readdir(commandsSrc);
+    for (const file of files) {
+      if (file.endsWith(".md")) {
+        await copyAsset(path.join("commands", file), targetRoot);
+        copied.push(`commands/${file}`);
+      }
+    }
+  } catch (err) {
+    // Ignore if directory missing
+  }
+
+  return copied;
 }
 
 function checkOllamaRunning(): boolean {
@@ -92,7 +126,8 @@ async function main() {
         env: {
           WRAPPER_WORKSPACE_ROOT: targetRoot,
           WRAPPER_RUNTIME: process.env.WRAPPER_RUNTIME ?? "ollama",
-          WRAPPER_OLLAMA_MODEL: process.env.WRAPPER_OLLAMA_MODEL ?? "gemma4:e4b",
+          WRAPPER_OLLAMA_MODEL: process.env.WRAPPER_OLLAMA_MODEL ?? "gemma4:12b-mlx",
+          WRAPPER_OLLAMA_NUM_CTX: process.env.WRAPPER_OLLAMA_NUM_CTX ?? "65536",
           WRAPPER_OLLAMA_EMBED_MODEL: process.env.WRAPPER_OLLAMA_EMBED_MODEL ?? "nomic-embed-text",
           OLLAMA_HOST: process.env.OLLAMA_HOST ?? "http://127.0.0.1:11434"
         }
@@ -107,14 +142,8 @@ async function main() {
     { mode: 0o600 }
   );
 
-  await copyAsset("rules/local-context-wrapper.mdc", targetRoot);
-  await copyAsset("commands/lcw-refine.md", targetRoot);
-  await copyAsset("commands/lcw-handoff.md", targetRoot);
-  await copyAsset("commands/lcw-brief.md", targetRoot);
-  await copyAsset("commands/lcw-index.md", targetRoot);
-  await copyAsset("commands/lcw-auto.md", targetRoot);
-  await copyAsset("commands/lcw-diagnose.md", targetRoot);
-  console.log(`✅ Cursor registration complete! (.cursor/mcp.json created, /lcw- commands copied)`);
+  const copied = await copyAllAssets(targetRoot);
+  console.log(`✅ Cursor registration complete! (.cursor/mcp.json created, ${copied.length} slash commands and rules dynamically copied)`);
 
   // 3. System Checks & Auto-Installers
   console.log("\n⚙️  3. Verifying Local Model Runtimes...");
@@ -152,7 +181,7 @@ async function main() {
     if (running) {
       console.log("🟢 Ollama local background service is running.");
       // Pull required models
-      await runOllamaPull("gemma4:e4b");
+      await runOllamaPull("gemma4:12b-mlx");
       await runOllamaPull("nomic-embed-text");
     } else {
       console.log("⚠️  Could not start Ollama service automatically. Please start the Ollama application manually.");

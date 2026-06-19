@@ -20,6 +20,9 @@ describe("agent brief integration", () => {
         projectGoal: "Build task-scoped briefs"
       });
 
+      // Mock fetch to reject so indexing runs in fallback lexical mode instantly without real network hits
+      vi.spyOn(global, "fetch").mockRejectedValue(new Error("Ollama connection refused for indexer mock"));
+
       // Write a file to index
       await mkdir(join(workspace, "src"), { recursive: true });
       await writeFile(join(workspace, "src/foo.ts"), "export function hello() { return 'world'; } // foo.ts tests");
@@ -27,6 +30,11 @@ describe("agent brief integration", () => {
       // Build index in lexical fallback mode
       await store.ensurePolicy();
       const policy = await store.readPolicy();
+      policy.autonomous.briefMode = "llm";
+      const { writeYaml } = await import("@wrapper/context-store");
+      // Since writeYaml is not exported, we can just write it using YAML string or JSON
+      await writeFile(join(workspace, ".wrapper/policy.yaml"), JSON.stringify(policy), "utf8");
+
       const manifest = await store.paths.root; // Just to make sure store is ready
 
       const tools = createWrapperTools({
@@ -60,6 +68,7 @@ describe("agent brief integration", () => {
       expect(brief.briefPath).toBeDefined();
       expect(brief.retrievalHits.length).toBeGreaterThanOrEqual(1);
       expect(brief.retrievalHits.some(h => h.path === "src/foo.ts")).toBe(true);
+      expect(brief.verificationSteps).toEqual(["Run test"]);
 
       const fileContent = await readFile(brief.briefPath!, "utf8");
       expect(fileContent).toContain("# Task Brief: Add tests for foo.ts");
@@ -95,6 +104,7 @@ describe("agent brief integration", () => {
       expect(brief.task).toBe("Implement semantic index");
       expect(brief.briefPath).toBeDefined();
       expect(brief.briefMarkdown).toContain("# Task Brief: Implement semantic index");
+      expect(brief.verificationSteps).toEqual(["Run test suite or compile checks"]);
     } finally {
       await rm(workspace, { recursive: true, force: true });
     }

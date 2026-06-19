@@ -46,7 +46,8 @@ describe("runtime generator llm assessment", () => {
     expect(result.scoringMethod).toBe("llm");
     expect(result.score).toBe(88);
     expect(result.refinedPrompt).toContain("acceptance tests");
-    expect(fetchMock.mock.calls[0]?.[1]?.body).toContain('"format":"json"');
+    const generateCall = fetchMock.mock.calls.find(call => typeof call[0] === "string" && call[0].endsWith("/api/generate"));
+    expect(generateCall?.[1]?.body).toContain('"format":"json"');
     vi.unstubAllGlobals();
   });
 

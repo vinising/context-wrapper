@@ -41,6 +41,7 @@ const mockPolicy: WorkspacePolicy = {
     maxTaskTurns: 5,
     maxFilesModified: 10,
     forcedTier: "auto",
+    validationCommand: [],
     autoValidate: true,
     autoRollbackOnFailure: false
   }

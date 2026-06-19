@@ -80,6 +80,7 @@ describe("agent framework scaffold", () => {
         inScope: ["src/emitter.ts"],
         outOfScope: ["src/index.ts"],
         acceptanceCriteria: ["Unit tests must pass"],
+        verificationSteps: ["Run unit tests"],
         retrievalHits: [],
         createdAt: new Date().toISOString()
       };

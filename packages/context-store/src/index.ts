@@ -14,6 +14,19 @@ import {
   ActivePlan,
   ActivePlanSchema
 } from "@wrapper/schemas";
+import {
+  sanitizeHandoffFocus,
+  sanitizeHandoffSteps,
+  sanitizeHandoffText
+} from "./sanitize-handoff.js";
+
+export {
+  sanitizeHandoffFocus,
+  sanitizeHandoffSteps,
+  sanitizeHandoffText,
+  isValidCompactionSummary,
+  parseCompactionSummaryContract
+} from "./sanitize-handoff.js";
 
 export type InitialContext = {
   projectName: string;
@@ -60,12 +73,28 @@ const defaultPolicy: WorkspacePolicy = {
     maxTaskTurns: 5,
     maxFilesModified: 10,
     forcedTier: "auto",
+    validationCommand: [],
     autoValidate: true,
     autoRollbackOnFailure: false
   },
+  hygiene: {
+    enabled: true,
+    autoDocUpdate: true,
+    docScope: "smart_touched",
+    autoCommitOnPlanComplete: true,
+    autoPush: false,
+    commitMode: "plan_scoped",
+    promptThresholds: {
+      milestones: 5,
+      changedLines: 200
+    }
+  },
   contextManagement: {
     zeroHistoryReset: true,
-    resetStrategy: "clear_history"
+    resetStrategy: "clear_history",
+    directorRawReadMaxLines: 50,
+    useCheapHostedWorkerForProjections: true,
+    useCheapHostedWorkerWhenOllamaUnavailable: true
   }
 };
 
@@ -145,6 +174,14 @@ export function createContextStore(workspaceRoot: string) {
         ...defaultPolicy.autonomous,
         ...parsed?.autonomous
       },
+      hygiene: {
+        ...defaultPolicy.hygiene,
+        ...parsed?.hygiene,
+        promptThresholds: {
+          ...defaultPolicy.hygiene.promptThresholds,
+          ...parsed?.hygiene?.promptThresholds
+        }
+      },
       contextManagement: {
         ...defaultPolicy.contextManagement,
         ...parsed?.contextManagement
@@ -162,12 +199,25 @@ export function createContextStore(workspaceRoot: string) {
     return DecisionLogSchema.parse(parse(await readFile(decisionsPath, "utf8")));
   }
 
-  async function updateHandoff(activeContext: HandoffUpdate): Promise<ContextHandoff> {
+  async function updateHandoff(
+    activeContext: HandoffUpdate,
+    options?: { compactSync?: boolean }
+  ): Promise<ContextHandoff> {
     const existing = await readHandoff();
+    const sanitizedContext: HandoffUpdate = {
+      summary: sanitizeHandoffText(activeContext.summary),
+      currentFocus: sanitizeHandoffFocus(activeContext.currentFocus),
+      constraints: activeContext.constraints.map(sanitizeHandoffText),
+      nextSteps: sanitizeHandoffSteps(activeContext.nextSteps)
+    };
     const updated = ContextHandoffSchema.parse({
       ...existing,
       updatedAt: new Date().toISOString(),
-      activeContext
+      activeContext: sanitizedContext,
+      signals: {
+        ...existing.signals,
+        ...(options?.compactSync ? { confidence: 0.95 } : {})
+      }
     });
 
     await writeYaml(currentYamlPath, updated);

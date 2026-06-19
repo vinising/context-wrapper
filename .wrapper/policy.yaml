@@ -26,3 +26,28 @@ agentBrief:
   enabled: true
   directory: .wrapper/runs
   maxEntries: 10
+autonomous:
+  interactiveApproval: true
+  maxTaskTurns: 5
+  maxFilesModified: 10
+  forcedTier: auto
+  validationCommand: []
+  autoValidate: true
+  autoRollbackOnFailure: false
+  briefMode: heuristic
+hygiene:
+  enabled: true
+  autoDocUpdate: true
+  docScope: smart_touched
+  autoCommitOnPlanComplete: true
+  autoPush: false
+  commitMode: plan_scoped
+  promptThresholds:
+    milestones: 5
+    changedLines: 200
+contextManagement:
+  zeroHistoryReset: true
+  resetStrategy: clear_history
+  directorRawReadMaxLines: 50
+  useCheapHostedWorkerForProjections: true
+  useCheapHostedWorkerWhenOllamaUnavailable: true

@@ -25,6 +25,9 @@
     "smoke:refine": "tsx packages/mcp-server/src/smoke.ts",
     "smoke:index": "tsx packages/mcp-server/src/smoke-index.ts",
     "smoke:brief": "tsx packages/mcp-server/src/smoke-brief.ts",
+    "smoke:compact": "tsx packages/mcp-server/src/smoke-compact.ts",
+    "smoke:map": "tsx packages/mcp-server/src/smoke-map.ts",
+    "smoke:auto-bench": "tsx packages/mcp-server/src/smoke-auto-bench.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit"

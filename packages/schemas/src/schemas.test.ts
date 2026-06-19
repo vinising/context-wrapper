@@ -6,7 +6,8 @@ import {
   PromptQualitySchema,
   WorkspacePolicySchema,
   IndexManifestSchema,
-  AgentBriefSchema
+  AgentBriefSchema,
+  MilestoneExecutionSchema
 } from "./index.js";
 
 describe("wrapper schemas", () => {
@@ -55,6 +56,14 @@ describe("wrapper schemas", () => {
         missingContext: ["target runtime"],
         recommendedQuestions: ["Which runtime should v1 use?"],
         refinedPrompt: "Build a Cursor-native local sidecar...",
+        targetFiles: [
+          {
+            path: "packages/mcp-server/src/index.ts",
+            startLine: 40,
+            endLine: 95,
+            reason: "refinePrompt and persistPromptResult implementation"
+          }
+        ],
         createdAt: "2026-06-15T14:30:00.000Z"
       }).score
     ).toBe(78);
@@ -110,8 +119,103 @@ describe("wrapper schemas", () => {
           directory: ".wrapper/prompts",
           maxEntries: 20
         }
+      }).autonomous.validationCommand
+    ).toEqual([]);
+    expect(
+      WorkspacePolicySchema.parse({
+        version: 1,
+        indexing: {
+          enabled: true,
+          include: ["src/**"],
+          exclude: [".env", "node_modules/**"]
+        },
+        privacy: {
+          allowPromptLogs: false,
+          redactSecrets: true
+        },
+        promptHistory: {
+          enabled: true,
+          directory: ".wrapper/prompts",
+          maxEntries: 20
+        }
+      }).hygiene.docScope
+    ).toBe("smart_touched");
+    expect(
+      WorkspacePolicySchema.parse({
+        version: 1,
+        indexing: {
+          enabled: true,
+          include: ["src/**"],
+          exclude: [".env", "node_modules/**"]
+        },
+        privacy: {
+          allowPromptLogs: false,
+          redactSecrets: true
+        },
+        promptHistory: {
+          enabled: true,
+          directory: ".wrapper/prompts",
+          maxEntries: 20
+        }
+      }).hygiene.promptThresholds.changedLines
+    ).toBe(200);
+    expect(
+      WorkspacePolicySchema.parse({
+        version: 1,
+        indexing: {
+          enabled: true,
+          include: ["src/**"],
+          exclude: [".env", "node_modules/**"]
+        },
+        privacy: {
+          allowPromptLogs: false,
+          redactSecrets: true
+        },
+        promptHistory: {
+          enabled: true,
+          directory: ".wrapper/prompts",
+          maxEntries: 20
+        }
       }).indexing.embedModel
     ).toBe("nomic-embed-text");
+    expect(
+      WorkspacePolicySchema.parse({
+        version: 1,
+        indexing: {
+          enabled: true,
+          include: ["src/**"],
+          exclude: [".env", "node_modules/**"]
+        },
+        privacy: {
+          allowPromptLogs: false,
+          redactSecrets: true
+        },
+        promptHistory: {
+          enabled: true,
+          directory: ".wrapper/prompts",
+          maxEntries: 20
+        }
+      }).contextManagement.directorRawReadMaxLines
+    ).toBe(50);
+    expect(
+      WorkspacePolicySchema.parse({
+        version: 1,
+        indexing: {
+          enabled: true,
+          include: ["src/**"],
+          exclude: [".env", "node_modules/**"]
+        },
+        privacy: {
+          allowPromptLogs: false,
+          redactSecrets: true
+        },
+        promptHistory: {
+          enabled: true,
+          directory: ".wrapper/prompts",
+          maxEntries: 20
+        }
+      }).contextManagement.useCheapHostedWorkerWhenOllamaUnavailable
+    ).toBe(true);
 
     expect(
       IndexManifestSchema.parse({
@@ -133,6 +237,7 @@ describe("wrapper schemas", () => {
         inScope: ["src/index.ts"],
         outOfScope: ["tests/"],
         acceptanceCriteria: ["npm test"],
+        verificationSteps: ["Run npm test"],
         retrievalHits: [
           {
             path: "src/index.ts",
@@ -145,6 +250,17 @@ describe("wrapper schemas", () => {
         createdAt: "2026-06-15T14:30:00.000Z"
       }).task
     ).toBe("Implement indexing");
+
+    expect(
+      MilestoneExecutionSchema.parse({
+        route: "decomposed_local",
+        complexityTier: "tier2_hybrid",
+        plannerModel: "local_ollama",
+        executionSource: "local_subagent",
+        microTaskCount: 3,
+        decompositionDepth: 1
+      }).route
+    ).toBe("decomposed_local");
   });
 
   it("rejects invalid prompt quality scores", () => {
